@@ -107,27 +107,44 @@ function gisLoaded() {
 /* ==== DATEN LADEN ==== */
 async function loadSheetData() {
     try {
+        // Tabellenblattname exakt angeben
+        const sheetName = "Tabelle1"; // <-- hier deinen Blattnamen eintragen
+        const range = `${sheetName}!A1:C10`;
+
+        console.log("📡 API-Request wird gesendet mit:");
+        console.log("spreadsheetId:", SHEET_ID);
+        console.log("range:", range);
+
+        // Sicherstellen, dass Sheets API geladen ist
+        await gapi.client.load("sheets", "v4");
+
         let response = await gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: SHEET_ID,
-            range: "Dashboard!A2:W6", // Bereich anpassen
+            range: range
         });
+
+        console.log("✅ API-Antwort:", response);
+
         let rows = response.result.values;
         if (!rows || rows.length === 0) {
             document.getElementById("data").innerHTML = "<p>Keine Daten gefunden.</p>";
             return;
         }
+
         let html = "<table><tr><th>Spalte 1</th><th>Spalte 2</th><th>Spalte 3</th></tr>";
         rows.forEach(r => {
             html += "<tr><td>" + (r[0] || "") + "</td><td>" + (r[1] || "") + "</td><td>" + (r[2] || "") + "</td></tr>";
         });
         html += "</table>";
         document.getElementById("data").innerHTML = html;
+
     } catch (err) {
-    console.error(err);
-    document.getElementById("data").innerHTML = 
-        "<p style='color:red;'>Fehler beim Laden:<br>" + JSON.stringify(err.result || err, null, 2) + "</p>";
+        console.error("❌ API-Fehler:", err);
+        document.getElementById("data").innerHTML =
+            "<p style='color:red;'>Fehler beim Laden:<br>" + JSON.stringify(err.result || err, null, 2) + "</p>";
     }
 }
+
 
 /* ==== CALLBACKS ==== */
 window.gapiLoaded = gapiLoaded;
