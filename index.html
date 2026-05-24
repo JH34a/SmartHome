@@ -3,138 +3,411 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartHome Steuerung</title>
-  <link rel="icon" type="image/x-icon" href="./favicon.ico">
-  <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0a0c0f;
-      color: #b8cce0;
-      text-align: center;
-      padding: 20px;
-    }
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      background: #3d8eff;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    #data {
-      margin-top: 20px;
-      background: rgba(255,255,255,0.05);
-      padding: 10px;
-      border-radius: 8px;
-    }
-  </style>
+  <title>Fenster- & Klimadaten</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <h1>SmartHome Steuerung</h1>
-  <button id="loginBtn" style="display:none;">🔑 Mit Google anmelden</button>
-  <div id="data"></div>
+<!-- LOGIN-SCREEN -->
+<div id="login-screen" style="text-align:center; padding:2rem;">
+  <h2>Bitte anmelden</h2>
+  <div id="loginBtn" style="display:inline-block; margin-top:1rem;"></div>
+</div>
 
-  <!-- Google API Client -->
-  <script src="https://apis.google.com/js/api.js" async defer></script>
-  <!-- Google Identity Services -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+<!-- APP-SCREEN (wird erst nach Login angezeigt) -->
+<div id="app-screen" style="display:none;">
 
-  <script>
-    /* ==== KONFIGURATION ==== */
-    const CLIENT_ID = "801207360349-a15mjbkcqhvlgjvqaev642lb0t4v81fd.apps.googleusercontent.com";
-    const SHEET_ID = "1-7n3D5y2Aecv9ULOB9LpVC9tcXU5-H87IgyYCR2sOqM";
-    const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+  <!-- Hauptansicht -->
+  <div id="screen-main" class="is-visible">
+    <div id="splash">Lade Daten...</div>
+    <div id="ts" class="timestamp"></div>
 
-    /* ==== VARIABLEN ==== */
-    let tokenClient;
-    let gapiInited = false;
-    let gisInited = false;
+    <!-- Beispiel: Außenbereich -->
+    <section id="out-strip">
+      <div id="o-off" class="offline-badge">Offline</div>
+      <div id="o-temp">–</div>
+      <div id="o-rh">–</div>
+      <div id="o-ah">–</div>
+    </section>
 
-    /* ==== LOGIN BUTTON ==== */
-    document.getElementById("loginBtn").onclick = () => {
-      tokenClient.requestAccessToken({ prompt: 'consent' });
-    };
+    <!-- Beispiel: Raumkarten -->
+    <div id="rc-SZ" class="room-card">
+      <div id="re-SZ" class="recommendation">–</div>
+      <div id="fd-SZ" class="status-dot"></div>
+      <div id="ft-SZ" class="status-text"></div>
+      <div id="diff-SZ" class="rcard-ah-diff">–</div>
+      <div id="gf-SZ" class="gauge-fill"></div>
+      <div id="rv-SZ-t">–</div>
+      <div id="rv-SZ-r">–</div>
+      <div id="rv-SZ-a">–</div>
+      <button class="rbtn rbtn-o" onclick="setFenster('SZ','offen')">Offen</button>
+      <button class="rbtn rbtn-g" onclick="setFenster('SZ','geschlossen')">Zu</button>
+    </div>
 
-    /* ==== GAPI LADEN ==== */
-    function gapiLoaded() {
-      gapi.load('client', initializeGapiClient);
-    }
+    <!-- Weitere Räume: KI, WZ ... -->
 
-    async function initializeGapiClient() {
-      await gapi.client.init({
-        discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
-      });
-      gapiInited = true;
-      maybeEnableLogin();
-    }
+    <!-- Urlaubsmodus -->
+    <div id="badge-url" class="badge">Urlaub</div>
+    <button id="fb-url" onclick="toggleUrlaub()">Urlaubsmodus umschalten</button>
+  </div>
 
-    /* ==== GOOGLE IDENTITY LADEN ==== */
-    function gisLoaded() {
-      tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: CLIENT_ID,
-        scope: SCOPES,
-        callback: async (tokenResponse) => {
-          document.getElementById("loginBtn").style.display = "none";
-          await gapi.client.load("sheets", "v4");
-          loadSheetData();
-        },
-      });
-      gisInited = true;
-      maybeEnableLogin();
-    }
+  <!-- Historienansicht -->
+  <div id="screen-hist" class="is-hidden">
+    <div class="hist-nav">
+      <button id="mprev" onclick="wechselMonat(-1)">◀</button>
+      <span id="mlabel"></span>
+      <button id="mnext" onclick="wechselMonat(1)">▶</button>
+    </div>
+    <div id="hist-content"></div>
+  </div>
 
-    /* ==== BUTTON ANZEIGEN WENN BEREIT ==== */
-    function maybeEnableLogin() {
-      if (gapiInited && gisInited) {
-        document.getElementById("loginBtn").style.display = "inline-block";
-      }
-    }
+</div>
+<!-- Google Identity Services Script -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    /* ==== DATEN LADEN ==== */
-    async function loadSheetData() {
-      try {
-        const sheetName = "Dashboard";
-        const response = await gapi.client.sheets.spreadsheets.values.get({
-          spreadsheetId: SHEET_ID,
-          range: sheetName,
-        });
+<script>
+// ─────────────────────────────────────────────
+// KONFIGURATION
+// ─────────────────────────────────────────────
+const WEB_APP_URL = "DEINE_WEB_APP_URL"; // z.B. Google Apps Script Web App URL
+let SECRET_TOKEN = null; // Wird nach Login gesetzt
+const RELOAD_MS = 30000; // z.B. 30 Sekunden
 
-        const rows = response.result.values;
-        if (!rows || rows.length === 0) {
-          document.getElementById("data").innerHTML = "Keine Daten gefunden.";
-          return;
-        }
+let reloadTimer = null;
+let urlaubsmodus = "Nein";
+let ahAussen = null;
+let histMonat = new Date();
+const NOW_MONAT = new Date();
+const MONATE_DE = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
 
-        let html = "<table border='1' cellpadding='5'><tr><th>Spalte 1</th><th>Spalte 2</th><th>Spalte 3</th></tr>";
-        rows.forEach(r => {
-          html += `<tr><td>${r[0] || ""}</td><td>${r[1] || ""}</td><td>${r[2] || ""}</td></tr>`;
-        });
-        html += "</table>";
-        document.getElementById("data").innerHTML = html;
+// ─────────────────────────────────────────────
+// GOOGLE LOGIN
+// ─────────────────────────────────────────────
+function handleCredentialResponse(response) {
+  const data = parseJwt(response.credential);
+  console.log("✅ Angemeldet als:", data.email);
 
-      } catch (err) {
-        console.error("❌ API-Fehler:", err);
-        document.getElementById("data").innerHTML =
-          "Fehler beim Laden: " + JSON.stringify(err.result || err, null, 2);
-      }
-    }
+  // Falls du SECRET_TOKEN vom Server holen willst:
+  // fetch(`${WEB_APP_URL}?action=getToken&email=${encodeURIComponent(data.email)}`)
+  //   .then(r => r.json())
+  //   .then(res => { SECRET_TOKEN = res.token; laden(); });
 
-    /* ==== CALLBACKS ==== */
-    window.gapiLoaded = gapiLoaded;
-    window.gisLoaded = gisLoaded;
-  </script>
+  // Für Testzwecke: statisch setzen
+  SECRET_TOKEN = "DEIN_FESTES_SECRET_TOKEN";
 
-  <!-- Initialisierung -->
-  <script>
-    // Warten bis beide Skripte geladen sind
-    window.addEventListener('load', () => {
-      if (typeof gapiLoaded === "function") gapiLoaded();
-      if (typeof gisLoaded === "function") gisLoaded();
+  // Login-UI ausblenden, App starten
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("app-screen").style.display = "block";
+
+  laden();
+}
+
+function parseJwt(token) {
+  try {
+    return JSON.parse(atob(token.split('.')[1]));
+  } catch (e) {
+    return {};
+  }
+}
+
+// ─────────────────────────────────────────────
+// START
+// ─────────────────────────────────────────────
+window.onload = function() {
+  google.accounts.id.initialize({
+    client_id: "DEINE_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+    callback: handleCredentialResponse
+  });
+
+  google.accounts.id.renderButton(
+    document.getElementById("loginBtn"),
+    { theme: "outline", size: "large" }
+  );
+
+  google.accounts.id.prompt(); // Automatisches Login-Popup
+};
+
+<script>
+// ─────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────
+function zeigeHistorie(){
+  vib(8);
+  document.getElementById("screen-main").classList.replace("is-visible","is-behind");
+  document.getElementById("screen-hist").classList.replace("is-hidden","is-visible");
+  ladeHistorie();
+}
+function zeigeMain(){
+  vib(8);
+  document.getElementById("screen-hist").classList.replace("is-visible","is-hidden");
+  document.getElementById("screen-main").classList.replace("is-behind","is-visible");
+}
+
+// ─────────────────────────────────────────────
+// DATEN LADEN
+// ─────────────────────────────────────────────
+async function laden(){
+  if(reloadTimer) clearTimeout(reloadTimer);
+  try{
+    const r = await fetch(`${WEB_APP_URL}?action=read&token=${SECRET_TOKEN}`);
+    const d = await r.json();
+    render(d);
+  }catch(e){
+    showToast("⚠ Verbindungsfehler");
+  }
+  reloadTimer = setTimeout(laden, RELOAD_MS);
+}
+
+// ─────────────────────────────────────────────
+// RENDER HAUPT
+// ─────────────────────────────────────────────
+function render(data){
+  const sp = document.getElementById("splash");
+  if(sp){ sp.classList.add("fade"); setTimeout(()=>sp.remove(),600); }
+
+  document.getElementById("ts").textContent =
+    [data.datum,data.uhrzeit].filter(Boolean).join("  ") || "–";
+
+  // Urlaub
+  urlaubsmodus = data.urlaubsmodus || "Nein";
+  const isUrl = urlaubsmodus === "Ja";
+  document.getElementById("badge-url").classList.toggle("on", isUrl);
+  document.getElementById("fb-url").classList.toggle("on", isUrl);
+
+  // Außen
+  const a = data.aussen || {};
+  const aOff = !a.temp || a.temp === "Sensor offline";
+  ahAussen = aOff ? null : parseFloat(a.ah);
+  document.getElementById("o-off").classList.toggle("on", aOff);
+  document.getElementById("out-strip").style.opacity = aOff ? "0.4" : "1";
+  document.getElementById("o-temp").textContent = aOff ? "–" : fT(a.temp);
+  document.getElementById("o-rh").textContent   = aOff ? "–" : fRH(a.rh);
+  document.getElementById("o-ah").textContent   = aOff ? "–" : fAH(a.ah);
+
+  // Räume
+  ROOMS.forEach(k => renderRoom(k, data[ROOM_KEYS[k]] || {}, aOff));
+}
+
+function renderRoom(k,d,aOff){
+  const card = document.getElementById("rc-"+k);
+  const offline  = !d.temp || d.temp === "Sensor offline";
+  const kein     = aOff || d.empfehlung === "Kein Vergleichswert";
+  const lueften  = d.empfehlung === "Lüften";
+  const istOffen = d.status === "Fenster offen";
+
+  card.classList.remove("s-lüften","s-ok","s-offline","s-kein");
+  if(offline)       card.classList.add("s-offline");
+  else if(kein)     card.classList.add("s-kein");
+  else if(lueften)  card.classList.add("s-lüften");
+  else              card.classList.add("s-ok");
+
+  // Empfehlung
+  const re = document.getElementById("re-"+k);
+  re.textContent = offline ? "Offline" : kein ? "–" : lueften ? "Lüften" : "Gut";
+
+  // Fensterstatus
+  const dot = document.getElementById("fd-"+k);
+  const ftx = document.getElementById("ft-"+k);
+  if(!offline){
+    const alarm = (lueften && !istOffen) || (!lueften && !kein && istOffen);
+    dot.style.background = alarm ? "var(--o)" : istOffen ? "var(--g)" : "var(--ghost)";
+    dot.style.boxShadow  = alarm ? "0 0 7px var(--o3)" : istOffen ? "0 0 7px var(--g3)" : "none";
+    ftx.style.color      = alarm ? "var(--o)" : "var(--sub)";
+    ftx.textContent      = istOffen ? "offen" : "zu";
+  }else{
+    dot.style.background = "var(--r)";
+    dot.style.boxShadow  = "none";
+    ftx.textContent      = "";
+  }
+
+  // AH Diff + Gauge
+  const diffEl = document.getElementById("diff-"+k);
+  const gfEl   = document.getElementById("gf-"+k);
+  if(!offline && !kein && ahAussen !== null){
+    const diff = parseFloat(d.ah) - ahAussen;
+    const pct  = Math.min(Math.max((diff/4)*100,0),100);
+    diffEl.textContent = (diff>=0?"+":"")+diff.toFixed(1)+" g/m³";
+    diffEl.className   = "rcard-ah-diff "+(diff>0?"pos":"neg");
+    gfEl.style.width   = pct+"%";
+    gfEl.style.background = lueften ? "var(--o)" : "var(--g)";
+  }else{
+    diffEl.textContent = "–";
+    diffEl.className   = "rcard-ah-diff";
+    gfEl.style.width   = "0%";
+  }
+
+  // Messwerte
+  document.getElementById("rv-"+k+"-t").textContent = offline ? "–" : fT(d.temp);
+  document.getElementById("rv-"+k+"-r").textContent = offline ? "–" : fRH(d.rh);
+  document.getElementById("rv-"+k+"-a").textContent = offline ? "–" : fAH(d.ah);
+
+  // Button-Highlight
+  card.querySelectorAll(".rbtn").forEach(b=>b.classList.remove("active-state"));
+  if(!offline){
+    card.querySelectorAll(".rbtn-o")[0].classList.toggle("active-state",istOffen);
+    card.querySelectorAll(".rbtn-g")[0].classList.toggle("active-state",!istOffen);
+  }
+}
+
+// ─────────────────────────────────────────────
+// AKTIONEN
+// ─────────────────────────────────────────────
+async function post(payload){
+  const r=await fetch(WEB_APP_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({...payload,token:SECRET_TOKEN})
+  });
+  return r.json();
+}
+
+async function setFenster(k,richtung){
+  vib([6,40,6]);
+  const name = ROOM_NAMES[k];
+  const wert = richtung === "offen" ? "Fenster offen" : "Fenster geschlossen";
+  const ere  = richtung === "offen" ? "Fenster geöffnet" : "Fenster geschlossen";
+  showToast(name + " · " + ere + " …");
+  try {
+    await post({ action: "setStatusMehrere", zimmer: { [k]: wert } });
+    await post({
+      action: "logEreignis",
+      ereignis: ere,
+      zimmer: { SZ: k === "SZ", KI: k === "KI", WZ: k === "WZ" }
     });
-  </script>
+    showToast("✓ " + name + " · " + ere);
+    await laden();
+  } catch(e) {
+    showToast("⚠ Fehler");
+  }
+}
 
+async function alleSetzen(richtung){
+  vib([6,40,6]);
+  const wert = richtung === "offen" ? "Fenster offen" : "Fenster geschlossen";
+  const ere  = richtung === "offen" ? "Fenster geöffnet" : "Fenster geschlossen";
+  showToast("Alle · " + ere + " …");
+  try {
+    await post({ action: "setStatusMehrere", zimmer: { SZ: wert, KI: wert, WZ: wert } });
+    await post({ action: "logEreignis", ereignis: ere, zimmer: { SZ: true, KI: true, WZ: true } });
+    showToast("✓ Alle · " + ere);
+    await laden();
+  } catch(e) {
+    showToast("⚠ Fehler");
+  }
+}
+
+async function toggleUrlaub(){
+  vib(12);
+  const neu = urlaubsmodus === "Ja" ? "Nein" : "Ja";
+  showToast("Urlaubsmodus: " + neu + " …");
+  try {
+    await post({ action: "setUrlaubsmodus", value: neu });
+    showToast("✓ Urlaubsmodus: " + neu);
+    await laden();
+  } catch(e) {
+    showToast("⚠ Fehler");
+  }
+}
+// ─────────────────────────────────────────────
+// HISTORIE
+// ─────────────────────────────────────────────
+function monatKey(d){
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0");
+}
+
+async function ladeHistorie(){
+  updateMNav();
+  document.getElementById("hist-content").innerHTML = "";
+  try {
+    const r = await fetch(`${WEB_APP_URL}?action=readLog&sheet=${monatKey(histMonat)}&token=${SECRET_TOKEN}`);
+    const d = await r.json();
+    if(d.error) throw new Error(d.error);
+    renderHistorie(d.rows || []);
+  } catch(e) {
+    document.getElementById("hist-content").innerHTML = `📭 Keine Daten`;
+  }
+}
+
+function wechselMonat(delta){
+  vib(6);
+  histMonat = new Date(histMonat.getFullYear(), histMonat.getMonth() + delta, 1);
+  ladeHistorie();
+}
+
+function updateMNav(){
+  document.getElementById("mlabel").textContent =
+    MONATE_DE[histMonat.getMonth()] + " " + histMonat.getFullYear();
+  document.getElementById("mnext").disabled =
+    monatKey(histMonat) === monatKey(NOW_MONAT);
+}
+
+function renderHistorie(rows){
+  if(!rows.length){
+    document.getElementById("hist-content").innerHTML = `📭 Keine Einträge`;
+    return;
+  }
+  const gruppen = {};
+  for(const row of rows){
+    const d = row[0] || "–";
+    if(!gruppen[d]) gruppen[d] = [];
+    gruppen[d].push(row);
+  }
+  let html = "";
+  for(const [datum,liste] of Object.entries(gruppen)){
+    html += `<h3>${datum}</h3>`;
+    for(const row of liste) html += buildEntry(row);
+  }
+  document.getElementById("hist-content").innerHTML = html;
+}
+
+function buildEntry(row){
+  const zeit = row[1] || "–";
+  const ere  = row[2] || "";
+  const mess = ere === "Messung";
+  if(!mess){
+    const pills = [];
+    if(row[3] === "✓") pills.push("Schlafzimmer");
+    if(row[4] === "✓") pills.push("Kinderzimmer");
+    if(row[5] === "✓") pills.push("Wohnzimmer");
+    return `<div class="hist-entry"><span>${zeit}</span> ${ere} ${pills.join(", ")}</div>`;
+  }
+  // Messung
+  const zellen = [
+    {k:"Außen",t:row[7], r:row[8], a:row[9],  e:null},
+    {k:"SZ",   t:row[10],r:row[11],a:row[12], e:row[13]},
+    {k:"KI",   t:row[14],r:row[15],a:row[16], e:row[17]},
+    {k:"WZ",   t:row[18],r:row[19],a:row[20], e:row[21]},
+  ];
+  const cells = zellen.map(z=>{
+    return `<div class="cell">${z.k} ${fT(z.t)} ${fRH(z.r)} ${z.e?z.e:""}</div>`;
+  }).join("");
+  return `<div class="hist-entry"><span>${zeit}</span> Messung ${cells}</div>`;
+}
+
+// ─────────────────────────────────────────────
+// HILFSFUNKTIONEN
+// ─────────────────────────────────────────────
+function fT(v){ return v ? parseFloat(v).toFixed(1) + "°C" : "–"; }
+function fRH(v){ return v ? parseFloat(v).toFixed(0) + "%" : "–"; }
+function fAH(v){ return v ? parseFloat(v).toFixed(1) + " g/m³" : "–"; }
+
+function vib(pattern){
+  if(navigator.vibrate) navigator.vibrate(pattern);
+}
+
+function showToast(msg){
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(()=>el.classList.add("show"),10);
+  setTimeout(()=>{
+    el.classList.remove("show");
+    setTimeout(()=>el.remove(),300);
+  },2000);
+}
+</script>
+
+<!-- Ende deines Scripts -->
 </body>
 </html>
