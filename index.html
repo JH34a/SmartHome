@@ -109,7 +109,7 @@ async function loadSheetData() {
     try {
         let response = await gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: SHEET_ID,
-            range: "Dashboard!A1:W6", // Bereich anpassen
+            range: "Dashboard!A2:W6", // Bereich anpassen
         });
         let rows = response.result.values;
         if (!rows || rows.length === 0) {
