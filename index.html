@@ -8,82 +8,192 @@
   <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 
 <!-- LOGIN-SCREEN -->
-<div id="login-screen" style="text-align:center; padding:2rem;">
-  <h2>Bitte anmelden</h2>
-  <div id="loginBtn" style="display:inline-block; margin-top:1rem;"></div>
+<div id="login-screen" style="display:flex; align-items:center; justify-content:center; height:100vh; flex-direction:column; gap:1.5rem;">
+  <h2 style="font-size:1.4rem; font-weight:700; color:var(--hi);">Bitte anmelden</h2>
+  <div id="loginBtn"></div>
 </div>
 
 <!-- APP-SCREEN (wird erst nach Login angezeigt) -->
-<div id="app-screen" style="display:none;">
+<div id="app-screen" style="display:none; width:100%; height:100vh; overflow:hidden; position:relative;">
 
   <!-- Hauptansicht -->
-  <div id="screen-main" class="is-visible">
-    <div id="splash">Lade Daten...</div>
-    <div id="ts" class="timestamp"></div>
+  <div id="screen-main" class="screen is-visible">
 
-    <!-- Beispiel: Außenbereich -->
-    <section id="out-strip">
-      <div id="o-off" class="offline-badge">Offline</div>
-      <div id="o-temp">–</div>
-      <div id="o-rh">–</div>
-      <div id="o-ah">–</div>
-    </section>
-
-    <!-- Beispiel: Raumkarten -->
-    <div id="rc-SZ" class="room-card">
-      <div id="re-SZ" class="recommendation">–</div>
-      <div id="fd-SZ" class="status-dot"></div>
-      <div id="ft-SZ" class="status-text"></div>
-      <div id="diff-SZ" class="rcard-ah-diff">–</div>
-      <div id="gf-SZ" class="gauge-fill"></div>
-      <div id="rv-SZ-t">–</div>
-      <div id="rv-SZ-r">–</div>
-      <div id="rv-SZ-a">–</div>
-      <button class="rbtn rbtn-o" onclick="setFenster('SZ','offen')">Offen</button>
-      <button class="rbtn rbtn-g" onclick="setFenster('SZ','geschlossen')">Zu</button>
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-logo">Smart<span>Home</span></div>
+      <div id="ts" class="topbar-ts"></div>
+      <div id="badge-url" class="badge-urlaub">Urlaub</div>
     </div>
 
-    <!-- Weitere Räume: KI, WZ ... -->
+    <!-- Außenbereich -->
+    <div id="out-strip">
+      <div class="out-tag">Außen</div>
+      <div class="out-vals">
+        <div class="out-val">
+          <div class="out-val-k">Temp</div>
+          <div id="o-temp" class="out-val-v">–</div>
+        </div>
+        <div class="out-val">
+          <div class="out-val-k">rF</div>
+          <div id="o-rh" class="out-val-v">–</div>
+        </div>
+        <div class="out-val">
+          <div class="out-val-k">AH</div>
+          <div id="o-ah" class="out-val-v">–</div>
+        </div>
+      </div>
+      <div id="o-off" class="out-offline">Offline</div>
+    </div>
 
-    <!-- Urlaubsmodus -->
-    <div id="badge-url" class="badge">Urlaub</div>
-    <button id="fb-url" onclick="toggleUrlaub()">Urlaubsmodus umschalten</button>
-  </div>
+    <!-- Splash -->
+    <div id="splash" class="screen" style="z-index:800; background:var(--ink);">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:22px; margin:auto;">
+        <div class="splash-logo">Smart<em>Home</em></div>
+        <div class="splash-hint">Lade Daten …</div>
+        <div class="dots">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Raumkarten -->
+    <div id="room-grid">
+
+      <!-- SZ -->
+      <div id="rc-SZ" class="rcard">
+        <div class="rcard-head">
+          <div class="rcard-name">Schlafzimmer</div>
+          <div class="rcard-fenster">
+            <div id="fd-SZ" class="rcard-fdot"></div>
+            <div id="ft-SZ" class="rcard-ftext"></div>
+          </div>
+        </div>
+        <div id="re-SZ" class="rcard-emp">–</div>
+        <div class="rcard-ah-row">
+          <div id="diff-SZ" class="rcard-ah-diff">–</div>
+          <div class="gauge-track"><div id="gf-SZ" class="gauge-fill"></div></div>
+        </div>
+        <div class="rcard-vals">
+          <div class="rval"><div class="rval-k">Temp</div><div id="rv-SZ-t" class="rval-v">–</div></div>
+          <div class="rval"><div class="rval-k">rF</div><div id="rv-SZ-r" class="rval-v">–</div></div>
+          <div class="rval"><div class="rval-k">AH</div><div id="rv-SZ-a" class="rval-v">–</div></div>
+        </div>
+        <div class="rcard-btns">
+          <button class="rbtn rbtn-o" onclick="setFenster('SZ','offen')">Offen</button>
+          <button class="rbtn rbtn-g" onclick="setFenster('SZ','geschlossen')">Zu</button>
+        </div>
+      </div>
+
+      <!-- KI -->
+      <div id="rc-KI" class="rcard">
+        <div class="rcard-head">
+          <div class="rcard-name">Kinderzimmer</div>
+          <div class="rcard-fenster">
+            <div id="fd-KI" class="rcard-fdot"></div>
+            <div id="ft-KI" class="rcard-ftext"></div>
+          </div>
+        </div>
+        <div id="re-KI" class="rcard-emp">–</div>
+        <div class="rcard-ah-row">
+          <div id="diff-KI" class="rcard-ah-diff">–</div>
+          <div class="gauge-track"><div id="gf-KI" class="gauge-fill"></div></div>
+        </div>
+        <div class="rcard-vals">
+          <div class="rval"><div class="rval-k">Temp</div><div id="rv-KI-t" class="rval-v">–</div></div>
+          <div class="rval"><div class="rval-k">rF</div><div id="rv-KI-r" class="rval-v">–</div></div>
+          <div class="rval"><div class="rval-k">AH</div><div id="rv-KI-a" class="rval-v">–</div></div>
+        </div>
+        <div class="rcard-btns">
+          <button class="rbtn rbtn-o" onclick="setFenster('KI','offen')">Offen</button>
+          <button class="rbtn rbtn-g" onclick="setFenster('KI','geschlossen')">Zu</button>
+        </div>
+      </div>
+
+      <!-- WZ -->
+      <div id="rc-WZ" class="rcard">
+        <div class="rcard-head">
+          <div class="rcard-name">Wohnzimmer</div>
+          <div class="rcard-fenster">
+            <div id="fd-WZ" class="rcard-fdot"></div>
+            <div id="ft-WZ" class="rcard-ftext"></div>
+          </div>
+        </div>
+        <div id="re-WZ" class="rcard-emp">–</div>
+        <div class="rcard-ah-row">
+          <div id="diff-WZ" class="rcard-ah-diff">–</div>
+          <div class="gauge-track"><div id="gf-WZ" class="gauge-fill"></div></div>
+        </div>
+        <div class="rcard-vals">
+          <div class="rval"><div class="rval-k">Temp</div><div id="rv-WZ-t" class="rval-v">–</div></div>
+          <div class="rval"><div class="rval-k">rF</div><div id="rv-WZ-r" class="rval-v">–</div></div>
+          <div class="rval"><div class="rval-k">AH</div><div id="rv-WZ-a" class="rval-v">–</div></div>
+        </div>
+        <div class="rcard-btns">
+          <button class="rbtn rbtn-o" onclick="setFenster('WZ','offen')">Offen</button>
+          <button class="rbtn rbtn-g" onclick="setFenster('WZ','geschlossen')">Zu</button>
+        </div>
+      </div>
+
+    </div><!-- /room-grid -->
+
+    <!-- Footer -->
+    <div id="main-footer">
+      <button id="fb-auf" class="fbtn" onclick="alleSetzen('offen')">Alle auf</button>
+      <button id="fb-zu"  class="fbtn" onclick="alleSetzen('geschlossen')">Alle zu</button>
+      <button id="fb-url" class="fbtn" onclick="toggleUrlaub()">🌴</button>
+      <button id="fb-log" class="fbtn" onclick="zeigeHistorie()">Log</button>
+      <button id="fb-ref" class="fbtn" onclick="laden()">↺</button>
+    </div>
+
+  </div><!-- /screen-main -->
 
   <!-- Historienansicht -->
-  <div id="screen-hist" class="is-hidden">
-    <div class="hist-nav">
-      <button id="mprev" onclick="wechselMonat(-1)">◀</button>
-      <span id="mlabel"></span>
-      <button id="mnext" onclick="wechselMonat(1)">▶</button>
+  <div id="screen-hist" class="screen is-hidden">
+    <div class="topbar">
+      <button class="back-btn" onclick="zeigeMain()">
+        <span class="back-chevron">‹</span> Zurück
+      </button>
     </div>
-    <div id="hist-content"></div>
+    <div id="hist-body">
+      <div class="mnav">
+        <button id="mprev" class="mnav-btn" onclick="wechselMonat(-1)">◀</button>
+        <span id="mlabel" class="mnav-label"></span>
+        <button id="mnext" class="mnav-btn" onclick="wechselMonat(1)">▶</button>
+      </div>
+      <div id="hist-content"></div>
+    </div>
   </div>
 
-</div>
-<!-- Google Identity Services Script -->
+</div><!-- /app-screen -->
+
+<!-- Google Identity Services -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <script>
 // ─────────────────────────────────────────────
 // KONFIGURATION
 // ─────────────────────────────────────────────
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby8phTBLxb62lDFvPG8d7qSNYBk8DF1nLocvnFFFPzb3cr8BzVvWfODGEavw-zqh37KXw/exec"; // z.B. Google Apps Script Web App URL
-let SECRET_TOKEN = null; // Wird nach Login gesetzt
-const RELOAD_MS = 30000; // z.B. 30 Sekunden
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby8phTBLxb62lDFvPG8d7qSNYBk8DF1nLocvnFFFPzb3cr8BzVvWfODGEavw-zqh37KXw/exec";
+let SECRET_TOKEN = null;
+const RELOAD_MS  = 30000;
 
-let reloadTimer = null;
+const ROOMS     = ["SZ","KI","WZ"];
+const ROOM_KEYS  = { SZ:"sz", KI:"ki", WZ:"wz" };
+const ROOM_NAMES = { SZ:"Schlafzimmer", KI:"Kinderzimmer", WZ:"Wohnzimmer" };
+
+let reloadTimer  = null;
 let urlaubsmodus = "Nein";
-let ahAussen = null;
-let histMonat = new Date();
-const NOW_MONAT = new Date();
-const MONATE_DE = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+let ahAussen     = null;
+let histMonat    = new Date();
+const NOW_MONAT  = new Date();
+const MONATE_DE  = ["Januar","Februar","März","April","Mai","Juni",
+                    "Juli","August","September","Oktober","November","Dezember"];
 
 // ─────────────────────────────────────────────
 // GOOGLE LOGIN
@@ -92,27 +202,22 @@ function handleCredentialResponse(response) {
   const data = parseJwt(response.credential);
   console.log("✅ Angemeldet als:", data.email);
 
-  // Falls du SECRET_TOKEN vom Server holen willst:
+  // SECRET_TOKEN vom Server holen (auskommentiert, statisch für Testzwecke):
   // fetch(`${WEB_APP_URL}?action=getToken&email=${encodeURIComponent(data.email)}`)
   //   .then(r => r.json())
   //   .then(res => { SECRET_TOKEN = res.token; laden(); });
 
-  // Für Testzwecke: statisch setzen
   SECRET_TOKEN = "sfj$akfgkjnifgh12$!dfkgs";
 
-  // Login-UI ausblenden, App starten
   document.getElementById("login-screen").style.display = "none";
-  document.getElementById("app-screen").style.display = "block";
+  document.getElementById("app-screen").style.display   = "block";
 
   laden();
 }
 
 function parseJwt(token) {
-  try {
-    return JSON.parse(atob(token.split('.')[1]));
-  } catch (e) {
-    return {};
-  }
+  try { return JSON.parse(atob(token.split('.')[1])); }
+  catch(e) { return {}; }
 }
 
 // ─────────────────────────────────────────────
@@ -123,25 +228,23 @@ window.onload = function() {
     client_id: "801207360349-a15mjbkcqhvlgjvqaev642lb0t4v81fd.apps.googleusercontent.com",
     callback: handleCredentialResponse
   });
-
   google.accounts.id.renderButton(
     document.getElementById("loginBtn"),
     { theme: "outline", size: "large" }
   );
-
-  google.accounts.id.prompt(); // Automatisches Login-Popup
+  google.accounts.id.prompt();
 };
 
 // ─────────────────────────────────────────────
 // NAVIGATION
 // ─────────────────────────────────────────────
-function zeigeHistorie(){
+function zeigeHistorie() {
   vib(8);
   document.getElementById("screen-main").classList.replace("is-visible","is-behind");
   document.getElementById("screen-hist").classList.replace("is-hidden","is-visible");
   ladeHistorie();
 }
-function zeigeMain(){
+function zeigeMain() {
   vib(8);
   document.getElementById("screen-hist").classList.replace("is-visible","is-hidden");
   document.getElementById("screen-main").classList.replace("is-behind","is-visible");
@@ -150,13 +253,13 @@ function zeigeMain(){
 // ─────────────────────────────────────────────
 // DATEN LADEN
 // ─────────────────────────────────────────────
-async function laden(){
+async function laden() {
   if(reloadTimer) clearTimeout(reloadTimer);
-  try{
+  try {
     const r = await fetch(`${WEB_APP_URL}?action=read&token=${SECRET_TOKEN}`);
     const d = await r.json();
     render(d);
-  }catch(e){
+  } catch(e) {
     showToast("⚠ Verbindungsfehler");
   }
   reloadTimer = setTimeout(laden, RELOAD_MS);
@@ -165,107 +268,99 @@ async function laden(){
 // ─────────────────────────────────────────────
 // RENDER HAUPT
 // ─────────────────────────────────────────────
-function render(data){
+function render(data) {
   const sp = document.getElementById("splash");
-  if(sp){ sp.classList.add("fade"); setTimeout(()=>sp.remove(),600); }
+  if(sp) { sp.classList.add("fade"); setTimeout(()=>sp.remove(), 600); }
 
   document.getElementById("ts").textContent =
-    [data.datum,data.uhrzeit].filter(Boolean).join("  ") || "–";
+    [data.datum, data.uhrzeit].filter(Boolean).join("  ") || "–";
 
-  // Urlaub
   urlaubsmodus = data.urlaubsmodus || "Nein";
   const isUrl = urlaubsmodus === "Ja";
   document.getElementById("badge-url").classList.toggle("on", isUrl);
   document.getElementById("fb-url").classList.toggle("on", isUrl);
 
-  // Außen
-  const a = data.aussen || {};
+  const a   = data.aussen || {};
   const aOff = !a.temp || a.temp === "Sensor offline";
-  ahAussen = aOff ? null : parseFloat(a.ah);
+  ahAussen   = aOff ? null : parseFloat(a.ah);
   document.getElementById("o-off").classList.toggle("on", aOff);
   document.getElementById("out-strip").style.opacity = aOff ? "0.4" : "1";
   document.getElementById("o-temp").textContent = aOff ? "–" : fT(a.temp);
   document.getElementById("o-rh").textContent   = aOff ? "–" : fRH(a.rh);
   document.getElementById("o-ah").textContent   = aOff ? "–" : fAH(a.ah);
 
-  // Räume
   ROOMS.forEach(k => renderRoom(k, data[ROOM_KEYS[k]] || {}, aOff));
 }
 
-function renderRoom(k,d,aOff){
-  const card = document.getElementById("rc-"+k);
-  const offline  = !d.temp || d.temp === "Sensor offline";
-  const kein     = aOff || d.empfehlung === "Kein Vergleichswert";
-  const lueften  = d.empfehlung === "Lüften";
-  const istOffen = d.status === "Fenster offen";
+function renderRoom(k, d, aOff) {
+  const card    = document.getElementById("rc-"+k);
+  const offline = !d.temp || d.temp === "Sensor offline";
+  const kein    = aOff || d.empfehlung === "Kein Vergleichswert";
+  const lueften = d.empfehlung === "Lüften";
+  const istOffen= d.status === "Fenster offen";
 
   card.classList.remove("s-lüften","s-ok","s-offline","s-kein");
-  if(offline)       card.classList.add("s-offline");
-  else if(kein)     card.classList.add("s-kein");
-  else if(lueften)  card.classList.add("s-lüften");
-  else              card.classList.add("s-ok");
+  if(offline)      card.classList.add("s-offline");
+  else if(kein)    card.classList.add("s-kein");
+  else if(lueften) card.classList.add("s-lüften");
+  else             card.classList.add("s-ok");
 
-  // Empfehlung
-  const re = document.getElementById("re-"+k);
-  re.textContent = offline ? "Offline" : kein ? "–" : lueften ? "Lüften" : "Gut";
+  document.getElementById("re-"+k).textContent =
+    offline ? "Offline" : kein ? "–" : lueften ? "Lüften" : "Gut";
 
-  // Fensterstatus
   const dot = document.getElementById("fd-"+k);
   const ftx = document.getElementById("ft-"+k);
-  if(!offline){
+  if(!offline) {
     const alarm = (lueften && !istOffen) || (!lueften && !kein && istOffen);
     dot.style.background = alarm ? "var(--o)" : istOffen ? "var(--g)" : "var(--ghost)";
     dot.style.boxShadow  = alarm ? "0 0 7px var(--o3)" : istOffen ? "0 0 7px var(--g3)" : "none";
     ftx.style.color      = alarm ? "var(--o)" : "var(--sub)";
     ftx.textContent      = istOffen ? "offen" : "zu";
-  }else{
+  } else {
     dot.style.background = "var(--r)";
     dot.style.boxShadow  = "none";
     ftx.textContent      = "";
   }
 
-  // AH Diff + Gauge
   const diffEl = document.getElementById("diff-"+k);
   const gfEl   = document.getElementById("gf-"+k);
-  if(!offline && !kein && ahAussen !== null){
+  if(!offline && !kein && ahAussen !== null) {
     const diff = parseFloat(d.ah) - ahAussen;
-    const pct  = Math.min(Math.max((diff/4)*100,0),100);
+    const pct  = Math.min(Math.max((diff/4)*100, 0), 100);
     diffEl.textContent = (diff>=0?"+":"")+diff.toFixed(1)+" g/m³";
     diffEl.className   = "rcard-ah-diff "+(diff>0?"pos":"neg");
     gfEl.style.width   = pct+"%";
     gfEl.style.background = lueften ? "var(--o)" : "var(--g)";
-  }else{
+  } else {
     diffEl.textContent = "–";
     diffEl.className   = "rcard-ah-diff";
     gfEl.style.width   = "0%";
   }
 
-  // Messwerte
   document.getElementById("rv-"+k+"-t").textContent = offline ? "–" : fT(d.temp);
   document.getElementById("rv-"+k+"-r").textContent = offline ? "–" : fRH(d.rh);
   document.getElementById("rv-"+k+"-a").textContent = offline ? "–" : fAH(d.ah);
 
-  // Button-Highlight
-  card.querySelectorAll(".rbtn").forEach(b=>b.classList.remove("active-state"));
-  if(!offline){
-    card.querySelectorAll(".rbtn-o")[0].classList.toggle("active-state",istOffen);
-    card.querySelectorAll(".rbtn-g")[0].classList.toggle("active-state",!istOffen);
+  card.querySelectorAll(".rbtn").forEach(b => b.classList.remove("active-state"));
+  if(!offline) {
+    card.querySelectorAll(".rbtn-o")[0].classList.toggle("active-state", istOffen);
+    card.querySelectorAll(".rbtn-g")[0].classList.toggle("active-state", !istOffen);
   }
 }
 
 // ─────────────────────────────────────────────
 // AKTIONEN
 // ─────────────────────────────────────────────
-async function post(payload){
-  const r=await fetch(WEB_APP_URL,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({...payload,token:SECRET_TOKEN})
+async function post(payload) {
+  const r = await fetch(WEB_APP_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...payload, token: SECRET_TOKEN })
   });
   return r.json();
 }
 
-async function setFenster(k,richtung){
+async function setFenster(k, richtung) {
   vib([6,40,6]);
   const name = ROOM_NAMES[k];
   const wert = richtung === "offen" ? "Fenster offen" : "Fenster geschlossen";
@@ -273,19 +368,14 @@ async function setFenster(k,richtung){
   showToast(name + " · " + ere + " …");
   try {
     await post({ action: "setStatusMehrere", zimmer: { [k]: wert } });
-    await post({
-      action: "logEreignis",
-      ereignis: ere,
-      zimmer: { SZ: k === "SZ", KI: k === "KI", WZ: k === "WZ" }
-    });
+    await post({ action: "logEreignis", ereignis: ere,
+                 zimmer: { SZ: k==="SZ", KI: k==="KI", WZ: k==="WZ" } });
     showToast("✓ " + name + " · " + ere);
     await laden();
-  } catch(e) {
-    showToast("⚠ Fehler");
-  }
+  } catch(e) { showToast("⚠ Fehler"); }
 }
 
-async function alleSetzen(richtung){
+async function alleSetzen(richtung) {
   vib([6,40,6]);
   const wert = richtung === "offen" ? "Fenster offen" : "Fenster geschlossen";
   const ere  = richtung === "offen" ? "Fenster geöffnet" : "Fenster geschlossen";
@@ -295,12 +385,10 @@ async function alleSetzen(richtung){
     await post({ action: "logEreignis", ereignis: ere, zimmer: { SZ: true, KI: true, WZ: true } });
     showToast("✓ Alle · " + ere);
     await laden();
-  } catch(e) {
-    showToast("⚠ Fehler");
-  }
+  } catch(e) { showToast("⚠ Fehler"); }
 }
 
-async function toggleUrlaub(){
+async function toggleUrlaub() {
   vib(12);
   const neu = urlaubsmodus === "Ja" ? "Nein" : "Ja";
   showToast("Urlaubsmodus: " + neu + " …");
@@ -308,18 +396,17 @@ async function toggleUrlaub(){
     await post({ action: "setUrlaubsmodus", value: neu });
     showToast("✓ Urlaubsmodus: " + neu);
     await laden();
-  } catch(e) {
-    showToast("⚠ Fehler");
-  }
+  } catch(e) { showToast("⚠ Fehler"); }
 }
+
 // ─────────────────────────────────────────────
 // HISTORIE
 // ─────────────────────────────────────────────
-function monatKey(d){
+function monatKey(d) {
   return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0");
 }
 
-async function ladeHistorie(){
+async function ladeHistorie() {
   updateMNav();
   document.getElementById("hist-content").innerHTML = "";
   try {
@@ -328,90 +415,110 @@ async function ladeHistorie(){
     if(d.error) throw new Error(d.error);
     renderHistorie(d.rows || []);
   } catch(e) {
-    document.getElementById("hist-content").innerHTML = `📭 Keine Daten`;
+    document.getElementById("hist-content").innerHTML =
+      `<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">Keine Daten</div></div>`;
   }
 }
 
-function wechselMonat(delta){
+function wechselMonat(delta) {
   vib(6);
   histMonat = new Date(histMonat.getFullYear(), histMonat.getMonth() + delta, 1);
   ladeHistorie();
 }
 
-function updateMNav(){
+function updateMNav() {
   document.getElementById("mlabel").textContent =
     MONATE_DE[histMonat.getMonth()] + " " + histMonat.getFullYear();
   document.getElementById("mnext").disabled =
     monatKey(histMonat) === monatKey(NOW_MONAT);
 }
 
-function renderHistorie(rows){
-  if(!rows.length){
-    document.getElementById("hist-content").innerHTML = `📭 Keine Einträge`;
+function renderHistorie(rows) {
+  if(!rows.length) {
+    document.getElementById("hist-content").innerHTML =
+      `<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">Keine Einträge</div></div>`;
     return;
   }
   const gruppen = {};
-  for(const row of rows){
+  for(const row of rows) {
     const d = row[0] || "–";
     if(!gruppen[d]) gruppen[d] = [];
     gruppen[d].push(row);
   }
   let html = "";
-  for(const [datum,liste] of Object.entries(gruppen)){
-    html += `<h3>${datum}</h3>`;
+  for(const [datum, liste] of Object.entries(gruppen)) {
+    html += `<div class="day-grp"><div class="day-hdr">${datum}</div>`;
     for(const row of liste) html += buildEntry(row);
+    html += `</div>`;
   }
   document.getElementById("hist-content").innerHTML = html;
 }
 
-function buildEntry(row){
+function buildEntry(row) {
   const zeit = row[1] || "–";
   const ere  = row[2] || "";
   const mess = ere === "Messung";
-  if(!mess){
+
+  if(!mess) {
     const pills = [];
-    if(row[3] === "✓") pills.push("Schlafzimmer");
-    if(row[4] === "✓") pills.push("Kinderzimmer");
-    if(row[5] === "✓") pills.push("Wohnzimmer");
-    return `<div class="hist-entry"><span>${zeit}</span> ${ere} ${pills.join(", ")}</div>`;
+    if(row[3]==="✓") pills.push("Schlafzimmer");
+    if(row[4]==="✓") pills.push("Kinderzimmer");
+    if(row[5]==="✓") pills.push("Wohnzimmer");
+    const cls = ere.includes("geöffnet") ? "ev-open" : ere.includes("geschlossen") ? "ev-close" : "";
+    return `<div class="lentry ${cls}">
+      <div class="ltime">${zeit}</div>
+      <div class="lbody">
+        <div class="levent">${ere}</div>
+        <div class="lpills">${pills.map(p=>`<span class="lpill">${p}</span>`).join("")}</div>
+      </div>
+    </div>`;
   }
-  // Messung
+
   const zellen = [
-    {k:"Außen",t:row[7], r:row[8], a:row[9],  e:null},
-    {k:"SZ",   t:row[10],r:row[11],a:row[12], e:row[13]},
-    {k:"KI",   t:row[14],r:row[15],a:row[16], e:row[17]},
-    {k:"WZ",   t:row[18],r:row[19],a:row[20], e:row[21]},
+    {k:"Außen", t:row[7],  r:row[8],  a:row[9],  e:null},
+    {k:"SZ",    t:row[10], r:row[11], a:row[12], e:row[13]},
+    {k:"KI",    t:row[14], r:row[15], a:row[16], e:row[17]},
+    {k:"WZ",    t:row[18], r:row[19], a:row[20], e:row[21]},
   ];
-  const cells = zellen.map(z=>{
-    return `<div class="cell">${z.k} ${fT(z.t)} ${fRH(z.r)} ${z.e?z.e:""}</div>`;
-  }).join("");
-  return `<div class="hist-entry"><span>${zeit}</span> Messung ${cells}</div>`;
+  const cells = zellen.map(z => `
+    <div class="lmcell">
+      <div class="lmcell-k">${z.k}</div>
+      <div class="lmcell-v">${fT(z.t)} ${fRH(z.r)}</div>
+      ${z.e ? `<div class="lmcell-e ${z.e==='Lüften'?'e-l':'e-n'}">${z.e}</div>` : ""}
+    </div>`).join("");
+  return `<div class="lentry">
+    <div class="ltime">${zeit}</div>
+    <div class="lbody">
+      <div class="levent">Messung</div>
+      <div class="lmgrid">${cells}</div>
+    </div>
+  </div>`;
 }
 
 // ─────────────────────────────────────────────
 // HILFSFUNKTIONEN
 // ─────────────────────────────────────────────
-function fT(v){ return v ? parseFloat(v).toFixed(1) + "°C" : "–"; }
-function fRH(v){ return v ? parseFloat(v).toFixed(0) + "%" : "–"; }
-function fAH(v){ return v ? parseFloat(v).toFixed(1) + " g/m³" : "–"; }
+function fT(v)  { return v ? parseFloat(v).toFixed(1)+"°C"   : "–"; }
+function fRH(v) { return v ? parseFloat(v).toFixed(0)+"%"    : "–"; }
+function fAH(v) { return v ? parseFloat(v).toFixed(1)+" g/m³": "–"; }
 
-function vib(pattern){
+function vib(pattern) {
   if(navigator.vibrate) navigator.vibrate(pattern);
 }
 
-function showToast(msg){
-  const el = document.createElement("div");
-  el.className = "toast";
+function showToast(msg) {
+  let el = document.getElementById("toast");
+  if(!el) {
+    el = document.createElement("div");
+    el.id = "toast";
+    document.body.appendChild(el);
+  }
   el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(()=>el.classList.add("show"),10);
-  setTimeout(()=>{
-    el.classList.remove("show");
-    setTimeout(()=>el.remove(),300);
-  },2000);
+  el.classList.add("on");
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove("on"), 2200);
 }
 </script>
 
-<!-- Ende deines Scripts -->
 </body>
 </html>
