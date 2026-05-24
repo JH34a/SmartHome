@@ -97,6 +97,7 @@ function gisLoaded() {
         scope: SCOPES,
         callback: async (tokenResponse) => {
             document.getElementById("loginBtn").style.display = "none";
+			await gapi.client.load("sheets", "v4");
             loadSheetData();
         },
     });
@@ -108,7 +109,7 @@ async function loadSheetData() {
     try {
         let response = await gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: SHEET_ID,
-            range: "A1:C10", // Bereich anpassen
+            range: "Dashboard!A1:W6", // Bereich anpassen
         });
         let rows = response.result.values;
         if (!rows || rows.length === 0) {
