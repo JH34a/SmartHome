@@ -351,14 +351,28 @@ function renderRoom(k, d, aOff) {
 // ─────────────────────────────────────────────
 // AKTIONEN
 // ─────────────────────────────────────────────
+//async function post(payload) {
+//  const r = await fetch(WEB_APP_URL, {
+//    method: "POST",
+//    headers: { "Content-Type": "application/json" },
+//    body: JSON.stringify({ ...payload, token: SECRET_TOKEN })
+//  });
+//  return r.json();
+//}
+
 async function post(payload) {
-  const r = await fetch(WEB_APP_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...payload, token: SECRET_TOKEN })
+  const params = new URLSearchParams({
+    ...payload,
+    token: SECRET_TOKEN
   });
+  // Verschachtelte Objekte (zimmer) müssen serialisiert werden:
+  if (payload.zimmer) {
+    params.set("zimmer", JSON.stringify(payload.zimmer));
+  }
+  const r = await fetch(`${WEB_APP_URL}?${params.toString()}`);
   return r.json();
 }
+
 
 async function setFenster(k, richtung) {
   vib([6,40,6]);
