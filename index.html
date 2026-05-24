@@ -278,11 +278,40 @@ async function laden() {
 // ─────────────────────────────────────────────
 // RENDER HAUPT
 // ─────────────────────────────────────────────
+function formatDatum(val) {
+  if (!val) return null;
+  // Bereits formatierter String wie "24.05.2026"
+  if (typeof val === "string" && val.includes(".")) return val;
+  // ISO-String oder Date-ähnlich
+  try {
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return String(val);
+    return d.toLocaleDateString("de-DE", {
+      day: "2-digit", month: "2-digit", year: "numeric"
+    });
+  } catch(e) { return String(val); }
+}
+
+function formatUhrzeit(val) {
+  if (!val) return null;
+  // Bereits formatierter String wie "22:13"
+  if (typeof val === "string" && val.includes(":") && val.length <= 5) return val;
+  try {
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return String(val);
+    return d.toLocaleTimeString("de-DE", {
+      hour: "2-digit", minute: "2-digit"
+    });
+  } catch(e) { return String(val); }
+}
+
 function render(data) {
   const sp = document.getElementById("splash");
   if(sp) { sp.classList.add("fade"); setTimeout(()=>sp.remove(), 600); }
 
   document.getElementById("ts").textContent =
+  const datum = formatDatum(data.datum);
+  const uhrzeit = formatUhrzeit(data.uhrzeit);
     [data.datum, data.uhrzeit].filter(Boolean).join("  ") || "–";
 
   urlaubsmodus = data.urlaubsmodus || "Nein";
@@ -507,7 +536,7 @@ function buildEntry(row) {
   const cells = zellen.map(z => `
     <div class="lmcell">
       <div class="lmcell-k">${z.k}</div>
-      <div class="lmcell-v">${fT(z.t)} ${fRH(z.r)}</div>
+      <div class="lmcell-v">${fT(z.t)} ${fRH(z.r) ${fAH(z.a)}</div>
       ${z.e ? `<div class="lmcell-e ${z.e==='Lüften'?'e-l':'e-n'}">${z.e}</div>` : ""}
     </div>`).join("");
   return `<div class="lentry">
