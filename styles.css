@@ -1,6 +1,4 @@
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
+
 
 /* ─────────────────────────────────────────────
    DESIGN TOKENS
@@ -559,4 +557,3 @@ body::before {
   letter-spacing: 0.08em;
 }
 
-</style>
