@@ -313,6 +313,7 @@ function render(data) {
   const uhrzeit = formatUhrzeit(data.uhrzeit);
   document.getElementById("ts").textContent =
     [data.datum, data.uhrzeit].filter(Boolean).join("  ") || "–";
+	console.log("datum:", data.datum, "uhrzeit:", data.uhrzeit);
 
   urlaubsmodus = data.urlaubsmodus || "Nein";
   const isUrl = urlaubsmodus === "Ja";
