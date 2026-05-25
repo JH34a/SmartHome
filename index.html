@@ -280,26 +280,30 @@ async function laden() {
 // ─────────────────────────────────────────────
 function formatDatum(val) {
   if (!val) return null;
-  if (typeof val === "string" && /^\d{2}\.\d{2}\.\d{4}$/.test(val)) return val;
+  const s = String(val);
+  if (/^\d{2}\.\d{2}\.\d{4}$/.test(s)) return s;
   try {
     const d = new Date(val);
-    if (isNaN(d.getTime())) return String(val);
+    if (isNaN(d.getTime())) return s;
+    // Datum in lokaler Zeit formatieren, nicht UTC — sonst Verschiebung um einen Tag
     return d.toLocaleDateString("de-DE", {
-      day: "2-digit", month: "2-digit", year: "numeric"
+      day: "2-digit", month: "2-digit", year: "numeric",
+      timeZone: "Europe/Berlin"
     });
-  } catch(e) { return String(val); }
+  } catch(e) { return s; }
 }
 
 function formatUhrzeit(val) {
   if (!val) return null;
-  if (typeof val === "string" && /^\d{2}:\d{2}$/.test(val)) return val;
+  const s = String(val);
+  // HH:mm:ss → HH:mm
+  if (/^\d{2}:\d{2}:\d{2}$/.test(s)) return s.substring(0, 5);
+  if (/^\d{2}:\d{2}$/.test(s)) return s;
   try {
     const d = new Date(val);
-    if (isNaN(d.getTime())) return String(val);
-    return d.toLocaleTimeString("de-DE", {
-      hour: "2-digit", minute: "2-digit"
-    });
-  } catch(e) { return String(val); }
+    if (isNaN(d.getTime())) return s;
+    return d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+  } catch(e) { return s; }
 }
 
 function render(data) {
