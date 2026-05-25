@@ -169,7 +169,7 @@ body::before {
 }
 .out-val-v {
   font-family: 'Fira Code', monospace;
-  font-size: 28px; font-weight: 400;
+  font-size: 36px; font-weight: 400;
   color: var(--text);  line-height: 1;
 }
 .out-offline {
@@ -320,7 +320,7 @@ body::before {
 }*/.rval {  background: var(--ink2);  border: 1px solid var(--line);  border-radius: 10px;  padding: 10px 14px;  position: relative;  display: flex;  align-items: center;  justify-content: flex-end;}.rval-k {  font-family: 'Fira Code', monospace;  font-size: 14px; color: var(--ghost);  letter-spacing: 0.1em; text-transform: uppercase;  position: absolute;  top: 8px;  left: 14px;}
 .rval-v {
   font-family: 'Fira Code', monospace;
-  font-size: 62px; font-weight: 500;
+  font-size: 52px; font-weight: 500;
   color: var(--text); white-space: nowrap;
 }
 
