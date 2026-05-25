@@ -315,6 +315,7 @@ function render(data) {
   document.getElementById("ts").textContent =
     [data.datum, data.uhrzeit].filter(Boolean).join("  ") || "–";
 	console.log("datum:", data.datum, "uhrzeit:", data.uhrzeit);
+	console.log("raw datum:", JSON.stringify(data.datum));
 
   urlaubsmodus = data.urlaubsmodus || "Nein";
   const isUrl = urlaubsmodus === "Ja";
