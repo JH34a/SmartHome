@@ -169,7 +169,7 @@ body::before {
 }
 .out-val-v {
   font-family: 'Fira Code', monospace;
-  font-size: 36px; font-weight: 400;
+  font-size: 28px; font-weight: 400;
   color: var(--text);  line-height: 1;
 }
 .out-offline {
@@ -477,7 +477,7 @@ body::before {
 }
 .ltime {
   font-family: 'Fira Code', monospace;
-  font-size: 11px; color: var(--ghost);
+  font-size: 13px; color: var(--text);
   flex-shrink: 0; width: 82px; padding-top: 2px;
   white-space: nowrap; overflow: hidden;
 }
