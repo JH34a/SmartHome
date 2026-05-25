@@ -316,6 +316,8 @@ function render(data) {
     [data.datum, data.uhrzeit].filter(Boolean).join("  ") || "–";
 	console.log("datum:", data.datum, "uhrzeit:", data.uhrzeit);
 	console.log("raw datum:", JSON.stringify(data.datum));
+	const d = new Date("2026-05-24T22:00:00.000Z");
+console.log(d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Berlin" }));
 
   urlaubsmodus = data.urlaubsmodus || "Nein";
   const isUrl = urlaubsmodus === "Ja";
