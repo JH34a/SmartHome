@@ -9,7 +9,7 @@
   --ink4:        #1a2130;
   --line:        #1f2836;
   --line2:       #263040;
-  --ghost:       #304055;
+  --ghost:       #506080;
   --sub:         #4a5e78;
   --mute:        #7a8fa8;
   --text:        #b8cce0;
@@ -149,7 +149,7 @@ body::before {
 }
 .out-tag {
   font-family: 'Fira Code', monospace;
-  font-size: 9px; font-weight: 400;
+  font-size: 21px; font-weight: 400;
   color: var(--ghost); letter-spacing: 0.14em;
   text-transform: uppercase;
   border: 1px solid var(--line2);
@@ -164,12 +164,12 @@ body::before {
 .out-val { display: flex; flex-direction: column; gap: 4px; }
 .out-val-k {
   font-family: 'Fira Code', monospace;
-  font-size: 10px; color: var(--ghost);
+  font-size: 14px; color: var(--ghost);
   letter-spacing: 0.1em; text-transform: uppercase;
 }
 .out-val-v {
   font-family: 'Fira Code', monospace;
-  font-size: 26px; font-weight: 400;
+  font-size: 36px; font-weight: 400;
   color: var(--text);  line-height: 1;
 }
 .out-offline {
@@ -239,7 +239,7 @@ body::before {
 }
 .rcard-name {
   font-family: 'Fira Code', monospace;
-  font-size: 9px; font-weight: 400;
+  font-size: 21px; font-weight: 400;
   color: var(--ghost); letter-spacing: 0.16em;
   text-transform: uppercase;
 }
@@ -254,7 +254,7 @@ body::before {
 }
 .rcard-ftext {
   font-family: 'Fira Code', monospace;
-  font-size: 9px; font-weight: 400;
+  font-size: 14px; font-weight: 400;
   color: var(--sub); letter-spacing: 0.06em;
   transition: color 0.3s;
 }
@@ -307,20 +307,20 @@ body::before {
   gap: 8px;  flex: 1;
 
 }
-.rval {
-  background: var(--ink2);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 10px 14px;  display: flex;  align-items: baseline:  justify-content: space-between;  flex: 1;
+/*.rval {
+  background: var(--ink2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 14px;  display: flex;  align-items: baseline;  justify-content: space-between;  flex: 1;
 }
 .rval-k {
-  font-family: 'Fira Code', monospace;
-  font-size: 10px; color: var(--ghost);
+  font-family: 'Fira Code', monospace;
+  font-size: 14px; color: var(--ghost);
   letter-spacing: 0.1em; text-transform: uppercase;
-}
+}*/.rval {  background: var(--ink2);  border: 1px solid var(--line);  border-radius: 10px;  padding: 10px 14px;  position: relative;  display: flex;  align-items: center;  justify-content: flex-end;}.rval-k {  font-family: 'Fira Code', monospace;  font-size: 14px; color: var(--ghost);  letter-spacing: 0.1em; text-transform: uppercase;  position: absolute;  top: 8px;  left: 14px;}
 .rval-v {
-  font-family: 'Fira Code', monospace;
-  font-size: 22px; font-weight: 500;
+  font-family: 'Fira Code', monospace;
+  font-size: 62px; font-weight: 500;
   color: var(--text); white-space: nowrap;
 }
 
@@ -333,7 +333,7 @@ body::before {
   padding: 13px 0; border-radius: var(--rad-s);
   border: 1px solid var(--line2);
   background: transparent;
-  font-size: 13px; font-weight: 700;
+  font-size: 16px; font-weight: 700;
   color: var(--sub);
   letter-spacing: 0.03em;
   transition: all 0.14s;
@@ -355,33 +355,7 @@ body::before {
 
 /* ─────────────────────────────────────────────
    FOOTER
-───────────────────────────────────────────── */
-#main-footer {
-  flex-shrink: 0; height: 62px;
-  border-top: 1px solid var(--line);
-  background: var(--ink2);
-  display: flex; align-items: center;
-  padding: 0 10px; gap: 7px;
-}
-.fbtn {
-  flex: 1; height: 40px;
-  border-radius: 10px;
-  border: 1px solid var(--line2);
-  background: var(--ink3);
-  font-size: 11px; font-weight: 700;
-  color: var(--sub);
-  letter-spacing: 0.02em;
-  transition: all 0.14s;
-  display: flex; align-items: center; justify-content: center;
-}
-.fbtn:active { transform: scale(0.94); }
-#fb-auf  { color: var(--o); border-color: rgba(255,124,58,0.25); background: var(--o2); }
-#fb-zu   { color: var(--g); border-color: rgba(13,245,160,0.2);  background: var(--g2); }
-#fb-url  { color: var(--y); border-color: rgba(245,208,0,0.2);   background: var(--y2); flex: 0.65; }
-#fb-url.on { background: rgba(245,208,0,0.2); border-color: rgba(245,208,0,0.45); }
-#fb-log  { color: var(--b); border-color: rgba(61,142,255,0.2);  background: var(--b2); flex: 0.65; }
-#fb-ref  { color: var(--ghost); flex: 0.42; font-size: 17px; }
-
+───────────────────────────────────────────── */#main-footer {  flex-shrink: 0; height: 62px;  border-top: 1px solid var(--line);  background: var(--ink2);  display: flex; align-items: center;  padding: 0 10px; gap: 7px;}.fbtn {  flex: 1; height: 40px;  border-radius: 10px;  border: 1px solid var(--line2);  background: var(--ink3);  font-size: 16px; font-weight: 700;  color: var(--sub);  letter-spacing: 0.02em;  transition: all 0.14s;  display: flex; align-items: center; justify-content: center;}.fbtn:active { transform: scale(0.94); }#fb-auf  { color: var(--o); border-color: rgba(255,124,58,0.25); background: var(--o2); }#fb-zu   { color: var(--g); border-color: rgba(13,245,160,0.2);  background: var(--g2); }#fb-url  { color: var(--y); border-color: rgba(245,208,0,0.2);   background: var(--y2); flex: 0.65; }#fb-url.on { background: rgba(245,208,0,0.2); border-color: rgba(245,208,0,0.45); }#fb-log  { color: var(--b); border-color: rgba(61,142,255,0.2);  background: var(--b2); flex: 0.65; }#fb-ref  { color: var(--ghost); flex: 0.42; font-size: 17px; }
 /* ─────────────────────────────────────────────
    TOAST
 ───────────────────────────────────────────── */
@@ -504,7 +478,7 @@ body::before {
 .ltime {
   font-family: 'Fira Code', monospace;
   font-size: 11px; color: var(--ghost);
-  flex-shrink: 0; width: 42px; padding-top: 2px;
+  flex-shrink: 0; width: 82px; padding-top: 2px;
   white-space: nowrap; overflow: hidden;
 }
 .lbody { flex: 1; min-width: 0; }
