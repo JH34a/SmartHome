@@ -489,7 +489,7 @@ function renderHistorie(rows) {
   }
   const gruppen = {};
   for(const row of rows) {
-    const d = row[0] || "–";
+    const d = formatDatum(row[0]) || "–";
     if(!gruppen[d]) gruppen[d] = [];
     gruppen[d].push(row);
   }
@@ -503,7 +503,7 @@ function renderHistorie(rows) {
 }
 
 function buildEntry(row) {
-  const zeit = row[1] || "–";
+  const zeit = formatDatum(row[1]) || "–";
   const ere  = row[2] || "";
   const mess = ere === "Messung";
 
