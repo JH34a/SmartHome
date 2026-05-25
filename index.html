@@ -303,7 +303,7 @@ function render(data) {
   const datum = formatDatum(data.datum);
   const uhrzeit = formatUhrzeit(data.uhrzeit);
   document.getElementById("ts").textContent =
-    [data.datum, data.uhrzeit].filter(Boolean).join("  ") || "–";
+    [datum, uhrzeit].filter(Boolean).join("  ") || "–";
 //	console.log("datum:", data.datum, "uhrzeit:", data.uhrzeit);
 //	console.log("raw datum:", JSON.stringify(data.datum));
 //	const d = new Date("2026-05-24T22:00:00.000Z");
