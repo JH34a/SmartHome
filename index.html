@@ -551,9 +551,9 @@ function buildEntry(row) {
 // ─────────────────────────────────────────────
 // HILFSFUNKTIONEN
 // ─────────────────────────────────────────────
-function fT(v)  { return v ? parseFloat(v).toFixed(1)+"°C"   : "–"; }
+function fT(v)  { return v ? parseFloat(v).toFixed(2)+"°C"   : "–"; }
 function fRH(v) { return v ? parseFloat(v).toFixed(0)+"%"    : "–"; }
-function fAH(v) { return v ? parseFloat(v).toFixed(1)+" g/m³": "–"; }
+function fAH(v) { return v ? parseFloat(v).toFixed(2)+" g/m³": "–"; }
 
 function vib(pattern) {
   if(navigator.vibrate) navigator.vibrate(pattern);
