@@ -191,13 +191,15 @@
 // ─────────────────────────────────────────────
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz0oWvF6y8TMPQ3Pz2ZJSAbu3x0-0wKxhIlYsBnvrWcDp-aqFKLUmzvc7YjhMd94Ex6FA/exec";
 let SECRET_TOKEN = null;
-const RELOAD_MS  = 30000;
 
 const ROOMS     = ["SZ","KI","WZ"];
 const ROOM_KEYS  = { SZ:"schlafzimmer", KI:"kinderzimmer", WZ:"wohnzimmer" };
 const ROOM_NAMES = { SZ:"Schlafzimmer", KI:"Kinderzimmer", WZ:"Wohnzimmer" };
 
-let reloadTimer  = null;
+// let reloadTimer  = null;
+let currentTimer = null;
+const RELOAD_MS = 2 * 60 * 1000;
+
 let urlaubsmodus = "Nein";
 let ahAussen     = null;
 let histMonat    = new Date();
@@ -248,23 +250,27 @@ window.onload = function() {
 // ─────────────────────────────────────────────
 // NAVIGATION
 // ─────────────────────────────────────────────
-function zeigeHistorie() {
+function zeigeHistorie(){
   vib(8);
+  if(currentTimer)clearInterval(currentTimer);
   document.getElementById("screen-main").classList.replace("is-visible","is-behind");
   document.getElementById("screen-hist").classList.replace("is-hidden","is-visible");
   ladeHistorie();
+  currentTimer=setInterval(ladeHistorie, RELOAD_MS);
 }
-function zeigeMain() {
+function zeigeMain(){
   vib(8);
+  if(currentTimer)clearInterval(currentTimer);
   document.getElementById("screen-hist").classList.replace("is-visible","is-hidden");
   document.getElementById("screen-main").classList.replace("is-behind","is-visible");
+  laden();
 }
 
 // ─────────────────────────────────────────────
 // DATEN LADEN
 // ─────────────────────────────────────────────
 async function laden() {
-  if(reloadTimer) clearTimeout(reloadTimer);
+  if(currentTimer) clearTimeout(currentTimer);
   try {
     const r = await fetch(`${WEB_APP_URL}?action=read&token=${SECRET_TOKEN}`);
     const d = await r.json();
@@ -272,7 +278,7 @@ async function laden() {
   } catch(e) {
     showToast("⚠ Verbindungsfehler");
   }
-  reloadTimer = setTimeout(laden, RELOAD_MS);
+  currentTimer = setTimeout(laden, RELOAD_MS);
 }
 
 // ─────────────────────────────────────────────
