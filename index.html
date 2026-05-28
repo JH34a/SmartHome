@@ -693,11 +693,19 @@ function switchView(v) {
   if(v === "chart") {
     logEl.classList.replace("is-active","is-inactive-left");
     chartEl.classList.replace("is-inactive-right","is-active");
-    setTimeout(() => buildCharts(),300);
+    waitForDataAndBuild();
   } else {
     chartEl.classList.replace("is-active","is-inactive-right");
     logEl.classList.replace("is-inactive-left","is-active");
   }
+}
+
+function waitForDataAndBuild(){
+	if (allRows.length > 0) {
+		setTimeout(() => buildCharts(), 300);
+	} else {
+		setTimeout(() => waitForDataAndBuild(),200);
+	}
 }
 
 function setRange(h) {
