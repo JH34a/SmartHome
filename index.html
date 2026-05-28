@@ -8,6 +8,7 @@
   <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="./styles.css">
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0a0c0f">
@@ -165,19 +166,84 @@
 
   <!-- Historienansicht -->
   <div id="screen-hist" class="screen is-hidden">
-    <div class="topbar">
-      <button class="back-btn" onclick="zeigeMain()">
-        <span class="back-chevron">‹</span> Zurück
-      </button>
-    </div>
+    <div class="hist-topbar">
+		<button class="back-btn" onclick="zeigeMain()">
+		<span class="back-chevron">‹</span>Zurück
+		</button>
+		<span class="hist-topbar-title">Verlauf</span>
+	<div class="view-toggle">
+		<button class="vtbtn active" id="vt-log"   onclick="switchView('log')">Liste</button>
+		<button class="vtbtn"        id="vt-chart" onclick="switchView('chart')">Charts</button>
+  </div>
+  </div>
     <div id="hist-body">
-      <div class="mnav">
-        <button id="mprev" class="mnav-btn" onclick="wechselMonat(-1)">◀</button>
-        <span id="mlabel" class="mnav-label"></span>
-        <button id="mnext" class="mnav-btn" onclick="wechselMonat(1)">▶</button>
-      </div>
-      <div id="hist-content"></div>
+
+  <!-- LOG VIEW -->
+  <div class="hist-view is-active" id="view-log">
+    <div class="mnav">
+      <button class="mnav-btn" id="mprev" onclick="wechselMonat(-1)">◀️</button>
+      <span class="mnav-label" id="mlabel">–</span>
+      <button class="mnav-btn" id="mnext" onclick="wechselMonat(1)">▶️</button>
     </div>
+    <div id="hist-content"></div>
+  </div>
+
+  <!-- CHART VIEW -->
+  <div class="hist-view is-inactive-right" id="view-charts">
+    <div class="chart-range-row">
+      <span class="chart-range-label">Zeitraum</span>
+      <div class="range-btns">
+        <button class="rbtn-range active" onclick="setRange(6)"  id="rb-6">6h</button>
+        <button class="rbtn-range"        onclick="setRange(12)" id="rb-12">12h</button>
+        <button class="rbtn-range"        onclick="setRange(24)" id="rb-24">24h</button>
+        <button class="rbtn-range"        onclick="setRange(48)" id="rb-48">48h</button>
+      </div>
+    </div>
+    <!-- SZ -->
+    <div class="chart-section">
+      <div class="chart-section-title">Schlafzimmer</div>
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-card-title">Temperatur</div>
+          <div class="chart-wrap"><canvas id="ch-SZ-temp"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">Absolute Feuchte g/m³</div>
+          <div class="chart-wrap"><canvas id="ch-SZ-ah"></canvas></div>
+        </div>
+      </div>
+    </div>
+    <!-- KI -->
+    <div class="chart-section">
+      <div class="chart-section-title">Kinderzimmer</div>
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-card-title">Temperatur</div>
+          <div class="chart-wrap"><canvas id="ch-KI-temp"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">Absolute Feuchte g/m³</div>
+          <div class="chart-wrap"><canvas id="ch-KI-ah"></canvas></div>
+        </div>
+      </div>
+    </div>
+    <!-- WZ -->
+    <div class="chart-section">
+      <div class="chart-section-title">Wohnzimmer</div>
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-card-title">Temperatur</div>
+          <div class="chart-wrap"><canvas id="ch-WZ-temp"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">Absolute Feuchte g/m³</div>
+          <div class="chart-wrap"><canvas id="ch-WZ-ah"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /view-charts -->
+
+</div><!-- /hist-body -->
   </div>
 
 </div><!-- /app-screen -->
@@ -189,7 +255,7 @@
 // ─────────────────────────────────────────────
 // KONFIGURATION
 // ─────────────────────────────────────────────
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz0oWvF6y8TMPQ3Pz2ZJSAbu3x0-0wKxhIlYsBnvrWcDp-aqFKLUmzvc7YjhMd94Ex6FA/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz0oWvF6y8TMPQ3Pz2ZJSAbu3x0-0wKxhIlYsBnvrWcDp-aqFKLUmzvc7YjhMd94Ex6FA/exec"
 let SECRET_TOKEN = null;
 
 const ROOMS     = ["SZ","KI","WZ"];
@@ -213,11 +279,6 @@ const MONATE_DE  = ["Januar","Februar","März","April","Mai","Juni",
 function handleCredentialResponse(response) {
   const data = parseJwt(response.credential);
   console.log("✅ Angemeldet als:", data.email);
-
-  // SECRET_TOKEN vom Server holen (auskommentiert, statisch für Testzwecke):
-  // fetch(`${WEB_APP_URL}?action=getToken&email=${encodeURIComponent(data.email)}`)
-  //   .then(r => r.json())
-  //   .then(res => { SECRET_TOKEN = res.token; laden(); });
 
   SECRET_TOKEN = "sfj$akfgkjnifgh12$!dfkgs";
 
@@ -465,7 +526,7 @@ function monatKey(d) {
   return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0");
 }
 
-async function ladeHistorie() {
+/*async function ladeHistorie() {
   updateMNav();
   document.getElementById("hist-content").innerHTML = "";
   try {
@@ -474,6 +535,22 @@ async function ladeHistorie() {
     if(d.error) throw new Error(d.error);
     renderHistorie(d.rows || []);
   } catch(e) {
+    document.getElementById("hist-content").innerHTML =
+      `<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">Keine Daten</div></div>`;
+  }
+}*/
+// NEU
+async function ladeHistorie() {
+  updateMNav();
+  try {
+    const r = await fetch(`${WEB_APP_URL}?action=readLog&sheet=${monatKey(histMonat)}&token=${SECRET_TOKEN}`);
+    const d = await r.json();
+    if(d.error) throw new Error(d.error);
+    allRows = d.rows || [];
+    renderHistorie(allRows);
+    if(activeView === "chart") buildCharts();
+  } catch(e) {
+    allRows = [];
     document.getElementById("hist-content").innerHTML =
       `<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">Keine Daten</div></div>`;
   }
@@ -577,6 +654,191 @@ function showToast(msg) {
   clearTimeout(el._t);
   el._t = setTimeout(() => el.classList.remove("on"), 2200);
 }
+
+// ─────────────────────────────────────────────
+// CHARTS
+// ─────────────────────────────────────────────
+let allRows     = [];
+let chartRangeH = 6;
+let activeView  = "log";
+let charts      = {};
+
+const ROW = {
+  DATUM:0, UHRZEIT:1, EREIGNIS:2,
+  SZ_HAKEN:3, KI_HAKEN:4, WZ_HAKEN:5,
+  A_TEMP:7,  A_RH:8,   A_AH:9,
+  SZ_TEMP:10,SZ_RH:11, SZ_AH:12, SZ_EMP:13,
+  KI_TEMP:14,KI_RH:15, KI_AH:16, KI_EMP:17,
+  WZ_TEMP:18,WZ_RH:19, WZ_AH:20, WZ_EMP:21,
+};
+const ROOM_ROW = {
+  SZ:{ temp:ROW.SZ_TEMP, ah:ROW.SZ_AH },
+  KI:{ temp:ROW.KI_TEMP, ah:ROW.KI_AH },
+  WZ:{ temp:ROW.WZ_TEMP, ah:ROW.WZ_AH },
+};
+const CHART_COLORS = {
+  SZ: { temp:"#3d8eff", ah:"#0df5a0" },
+  KI: { temp:"#ff7c3a", ah:"#f5d000" },
+  WZ: { temp:"#c77dff", ah:"#ff3d6e" },
+};
+
+function switchView(v) {
+  vib(6);
+  if(v === activeView) return;
+  activeView = v;
+  document.getElementById("vt-log").classList.toggle("active",   v==="log");
+  document.getElementById("vt-chart").classList.toggle("active", v==="chart");
+  const logEl   = document.getElementById("view-log");
+  const chartEl = document.getElementById("view-charts");
+  if(v === "chart") {
+    logEl.classList.replace("is-active","is-inactive-left");
+    chartEl.classList.replace("is-inactive-right","is-active");
+    buildCharts();
+  } else {
+    chartEl.classList.replace("is-active","is-inactive-right");
+    logEl.classList.replace("is-inactive-left","is-active");
+  }
+}
+
+function setRange(h) {
+  vib(6);
+  chartRangeH = h;
+  ["6","12","24","48"].forEach(x => {
+    document.getElementById("rb-"+x).classList.toggle("active", parseInt(x)===h);
+  });
+  buildCharts();
+}
+
+function rowToDate(row) {
+  const d = row[ROW.DATUM];
+  const t = row[ROW.UHRZEIT];
+  if(!d || !t) return null;
+
+  // Datum mit Berlin-Timezone (wie formatDatum)
+  const datumStr = new Date(d).toLocaleDateString("de-DE", {
+    day: "2-digit", month: "2-digit", year: "numeric",
+    timeZone: "Europe/Berlin"
+  });
+  const parts = datumStr.split(".");
+  if(parts.length < 3) return null;
+
+  // Uhrzeit mit Berlin-Timezone (wie formatUhrzeit)
+  const uhrzeitStr = new Date(t).toLocaleTimeString("de-DE", {
+    hour: "2-digit", minute: "2-digit",
+    timeZone: "Europe/Berlin"
+  });
+  const timeParts = uhrzeitStr.split(":");
+  if(timeParts.length < 2) return null;
+
+  return new Date(
+    parseInt(parts[2]),
+    parseInt(parts[1]) - 1,
+    parseInt(parts[0]),
+    parseInt(timeParts[0]),
+    parseInt(timeParts[1]),
+    0
+  );
+}
+
+
+function filterByRange(rows, stunden) {
+  const now    = new Date();
+  const cutoff = new Date(now.getTime() - stunden*60*60*1000);
+  return rows.filter(row => {
+    if(row[ROW.EREIGNIS] !== "Messung") return false;
+    const dt = rowToDate(row);
+    return dt && dt >= cutoff;
+  });
+}
+
+function hexToRgba(hex, a) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+function makeChartCfg(labels, values, color, unit) {
+  return {
+    type: "line",
+    data: {
+      labels,
+      datasets:[{
+        data: values,
+        borderColor: color,
+        backgroundColor: hexToRgba(color, 0.08),
+        borderWidth: 1.5,
+        pointRadius: 0,
+        pointHoverRadius: 3,
+        tension: 0.4,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 400 },
+      interaction: { mode:"index", intersect:false },
+      plugins: {
+        legend: { display:false },
+        tooltip: {
+          backgroundColor:"#1a2130", borderColor:"#263040", borderWidth:1,
+          titleColor:"#4a5e78", bodyColor:"#b8cce0",
+          titleFont:{ family:"'Fira Code', monospace", size:10 },
+          bodyFont: { family:"'Fira Code', monospace", size:11 },
+          padding:8,
+          callbacks:{ label: ctx => " "+ctx.parsed.y.toFixed(2)+" "+unit }
+        }
+      },
+      scales: {
+        x: {
+          ticks:{ color:"#304055", font:{ family:"'Fira Code', monospace", size:9 }, maxTicksLimit:6, maxRotation:0 },
+          grid:{ color:"#1f2836" }, border:{ color:"#1f2836" },
+        },
+        y: {ticks:{ color:"#304055", font:{ family:"'Fira Code', monospace", size:9 }, maxTicksLimit:5 },
+          grid:{ color:"#1f2836" }, border:{ color:"#1f2836" },
+        }
+      }
+    }
+  };
+}
+
+function buildCharts() {
+console.log("allRows count:", allRows.length);
+  console.log("first row sample:", allRows[0]);
+   
+  const filtered = filterByRange(allRows, chartRangeH);
+  console.log("filtered count:", filtered.length);
+  const labels = filtered.map(row => {
+    const dt = rowToDate(row);
+    if(!dt) return String(row[ROW.UHRZEIT]||"–").substring(0,5);
+    return String(dt.getHours()).padStart(2,"0")+":"+String(dt.getMinutes()).padStart(2,"0");
+  });
+
+  ROOMS.forEach(k => {
+    const ri   = ROOM_ROW[k];
+    const tempVals = filtered.map(r => { const v=parseFloat(r[ri.temp]); return isNaN(v)?null:v; });
+    const ahVals = filtered.map(r => { const v=parseFloat(r[ri.ah]); return isNaN(v)?null:v; });
+    const tempId = "ch-"+k+"-temp";
+    const ahId = "ch-"+k+"-ah";
+
+    if(charts[tempId]){ charts[tempId].destroy(); delete charts[tempId]; }
+    if(charts[ahId]){ charts[ahId].destroy(); delete charts[ahId]; }
+
+    if(!filtered.length) {
+      [tempId,ahId].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.parentNode.innerHTML = `<div class="chart-no-data">Keine Daten im Zeitraum</div>`;
+      });
+      return;
+    }
+
+    charts[tempId] = new Chart(document.getElementById(tempId), makeChartCfg(labels, tempVals, CHART_COLORS[k].temp, "°C"));
+    charts[ahId] = new Chart(document.getElementById(ahId), makeChartCfg(labels, ahVals, CHART_COLORS[k].ah, "g/m³"));
+  });
+}
+
+
 </script>
 
 </body>
