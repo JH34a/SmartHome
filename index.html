@@ -807,7 +807,7 @@ function buildCharts() {
 console.log("allRows count:", allRows.length);
   console.log("first row sample:", allRows[0]);
    
-  const filtered = filterByRange(allRows, chartRangeH);
+  const filtered = filterByRange(allRows, chartRangeH).reverse();
   console.log("filtered count:", filtered.length);
   const labels = filtered.map(row => {
     const dt = rowToDate(row);
