@@ -199,6 +199,20 @@
         <button class="rbtn-range"        onclick="setRange(48)" id="rb-48">48h</button>
       </div>
     </div>
+	<!-- Außen -->
+	<div class="chart-section">
+	  <div class="chart-section-title">Außen</div>
+	  <div class="chart-row">
+		<div class="chart-card">
+		  <div class="chart-card-title">Temperatur °C</div>
+		  <div class="chart-wrap"><canvas id="ch-A-temp"></canvas></div>
+		</div>
+		<div class="chart-card">
+		  <div class="chart-card-title">Absolute Feuchte g/m³</div>
+		  <div class="chart-wrap"><canvas id="ch-A-ah"></canvas></div>
+		</div>
+	  </div>
+	</div>
     <!-- SZ -->
     <div class="chart-section">
       <div class="chart-section-title">Schlafzimmer</div>
@@ -672,11 +686,13 @@ const ROW = {
   WZ_TEMP:18,WZ_RH:19, WZ_AH:20, WZ_EMP:21,
 };
 const ROOM_ROW = {
+  A: { temp:ROW.A_TEMP,  ah:ROW.A_AH  },
   SZ:{ temp:ROW.SZ_TEMP, ah:ROW.SZ_AH },
   KI:{ temp:ROW.KI_TEMP, ah:ROW.KI_AH },
   WZ:{ temp:ROW.WZ_TEMP, ah:ROW.WZ_AH },
 };
 const CHART_COLORS = {
+  A: { temp:"#ffffff", ah:"#aaaaaa" },
   SZ: { temp:"#3d8eff", ah:"#0df5a0" },
   KI: { temp:"#ff7c3a", ah:"#f5d000" },
   WZ: { temp:"#c77dff", ah:"#ff3d6e" },
@@ -823,7 +839,8 @@ console.log("allRows count:", allRows.length);
     return String(dt.getHours()).padStart(2,"0")+":"+String(dt.getMinutes()).padStart(2,"0");
   });
 
-  ROOMS.forEach(k => {
+//  ROOMS.forEach(k => {
+["A", ...ROOMS].forEach(k => {
     const ri   = ROOM_ROW[k];
     const tempVals = filtered.map(r => { const v=parseFloat(r[ri.temp]); return isNaN(v)?null:v; });
     const ahVals = filtered.map(r => { const v=parseFloat(r[ri.ah]); return isNaN(v)?null:v; });
