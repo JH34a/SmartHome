@@ -205,10 +205,12 @@
 	  <div class="chart-row">
 		<div class="chart-card">
 		  <div class="chart-card-title">Temperatur °C</div>
+		    <div class="chart-stats" id="stats-A-temp"></div>
 		  <div class="chart-wrap"><canvas id="ch-A-temp"></canvas></div>
 		</div>
 		<div class="chart-card">
 		  <div class="chart-card-title">Absolute Feuchte g/m³</div>
+			<div class="chart-stats" id="stats-A-ah"></div>
 		  <div class="chart-wrap"><canvas id="ch-A-ah"></canvas></div>
 		</div>
 	  </div>
@@ -219,10 +221,12 @@
       <div class="chart-row">
         <div class="chart-card">
           <div class="chart-card-title">Temperatur</div>
+		    <div class="chart-stats" id="stats-SZ-temp"></div>
           <div class="chart-wrap"><canvas id="ch-SZ-temp"></canvas></div>
         </div>
         <div class="chart-card">
           <div class="chart-card-title">Absolute Feuchte g/m³</div>
+		  <div class="chart-stats" id="stats-SZ-ah"></div>
           <div class="chart-wrap"><canvas id="ch-SZ-ah"></canvas></div>
         </div>
       </div>
@@ -233,10 +237,12 @@
       <div class="chart-row">
         <div class="chart-card">
           <div class="chart-card-title">Temperatur</div>
+		    <div class="chart-stats" id="stats-KI-temp"></div>
           <div class="chart-wrap"><canvas id="ch-KI-temp"></canvas></div>
         </div>
         <div class="chart-card">
           <div class="chart-card-title">Absolute Feuchte g/m³</div>
+			<div class="chart-stats" id="stats-KI-ah"></div>
           <div class="chart-wrap"><canvas id="ch-KI-ah"></canvas></div>
         </div>
       </div>
@@ -247,10 +253,12 @@
       <div class="chart-row">
         <div class="chart-card">
           <div class="chart-card-title">Temperatur</div>
+		    <div class="chart-stats" id="stats-WZ-temp"></div>
           <div class="chart-wrap"><canvas id="ch-WZ-temp"></canvas></div>
         </div>
         <div class="chart-card">
           <div class="chart-card-title">Absolute Feuchte g/m³</div>
+			<div class="chart-stats" id="stats-WZ-ah"></div>
           <div class="chart-wrap"><canvas id="ch-WZ-ah"></canvas></div>
         </div>
       </div>
@@ -844,6 +852,8 @@ console.log("allRows count:", allRows.length);
     const ri   = ROOM_ROW[k];
     const tempVals = filtered.map(r => { const v=parseFloat(r[ri.temp]); return isNaN(v)?null:v; });
     const ahVals = filtered.map(r => { const v=parseFloat(r[ri.ah]); return isNaN(v)?null:v; });
+	renderStats("stats-"+k+"-temp", tempVals, "°C");
+	renderStats("stats-"+k+"-ah",   ahVals,   "g/m³");
     const tempId = "ch-"+k+"-temp";
     const ahId = "ch-"+k+"-ah";
 
@@ -863,6 +873,26 @@ console.log("allRows count:", allRows.length);
   });
 }
 
+function renderStats(containerId, values, unit) {
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  const valid = values.filter(v => v !== null && !isNaN(v));
+  if(!valid.length) { el.innerHTML = ""; return; }
+  const min = Math.min(...valid);
+  const max = Math.max(...valid);
+  const avg = valid.reduce((a,b) => a+b, 0) / valid.length;
+  el.innerHTML = `
+  <div class="chart-stat-inline">
+    <span class="chart-stat-k">Min</span>
+    <span class="chart-stat-v">${min.toFixed(2)} ${unit}</span>
+    <span class="chart-stat-sep">|</span>
+    <span class="chart-stat-k">Max</span>
+    <span class="chart-stat-v">${max.toFixed(2)} ${unit}</span>
+    <span class="chart-stat-sep">|</span>
+    <span class="chart-stat-k">⌀</span>
+    <span class="chart-stat-v">${avg.toFixed(2)} ${unit}</span>
+  </div>`;
+}
 
 </script>
 
