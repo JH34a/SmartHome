@@ -12,14 +12,10 @@
   <link rel="stylesheet" href="./styles.css">
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0a0c0f">
-  
-  <!-- iOS Vollbildmodus -->
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="SmartHome">
-
-<!-- iOS Icon -->
-<link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SmartHome">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
 </head>
 <body>
 
@@ -29,61 +25,38 @@
   <div id="loginBtn"></div>
 </div>
 
-<!-- APP-SCREEN (wird erst nach Login angezeigt) -->
+<!-- APP-SCREEN -->
 <div id="app-screen" style="display:none; width:100%; height:100vh; overflow:hidden; position:relative;">
 
   <!-- Hauptansicht -->
   <div id="screen-main" class="screen is-visible">
-
-    <!-- Topbar -->
     <div class="topbar">
       <div class="topbar-logo">Smart<span>Home</span></div>
       <div id="ts" class="topbar-ts"></div>
       <div id="badge-url" class="badge-urlaub">Urlaub</div>
     </div>
-
-    <!-- Außenbereich -->
     <div id="out-strip">
       <div class="out-tag">Außen</div>
       <div class="out-vals">
-        <div class="out-val">
-          <div class="out-val-k">Temp</div>
-          <div id="o-temp" class="out-val-v">–</div>
-        </div>
-        <div class="out-val">
-          <div class="out-val-k">rF</div>
-          <div id="o-rh" class="out-val-v">–</div>
-        </div>
-        <div class="out-val">
-          <div class="out-val-k">AH</div>
-          <div id="o-ah" class="out-val-v">–</div>
-        </div>
+        <div class="out-val"><div class="out-val-k">Temp</div><div id="o-temp" class="out-val-v">–</div></div>
+        <div class="out-val"><div class="out-val-k">rF</div><div id="o-rh" class="out-val-v">–</div></div>
+        <div class="out-val"><div class="out-val-k">AH</div><div id="o-ah" class="out-val-v">–</div></div>
       </div>
       <div id="o-off" class="out-offline">Offline</div>
     </div>
-
-    <!-- Splash -->
     <div id="splash" class="screen" style="z-index:800; background:var(--ink);">
       <div style="display:flex; flex-direction:column; align-items:center; gap:22px; margin:auto;">
         <div class="splash-logo">Smart<em>Home</em></div>
         <div class="splash-hint">Lade Daten …</div>
-        <div class="dots">
-          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-        </div>
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
       </div>
     </div>
-
-    <!-- Raumkarten -->
     <div id="room-grid">
-
       <!-- SZ -->
       <div id="rc-SZ" class="rcard">
         <div class="rcard-head">
           <div class="rcard-name">Schlafzimmer</div>
-          <div class="rcard-fenster">
-            <div id="fd-SZ" class="rcard-fdot"></div>
-            <div id="ft-SZ" class="rcard-ftext"></div>
-          </div>
+          <div class="rcard-fenster"><div id="fd-SZ" class="rcard-fdot"></div><div id="ft-SZ" class="rcard-ftext"></div></div>
         </div>
         <div id="re-SZ" class="rcard-emp">–</div>
         <div class="rcard-ah-row">
@@ -100,15 +73,11 @@
           <button class="rbtn rbtn-g" onclick="setFenster('SZ','geschlossen')">Zu</button>
         </div>
       </div>
-
       <!-- KI -->
       <div id="rc-KI" class="rcard">
         <div class="rcard-head">
           <div class="rcard-name">Kinderzimmer</div>
-          <div class="rcard-fenster">
-            <div id="fd-KI" class="rcard-fdot"></div>
-            <div id="ft-KI" class="rcard-ftext"></div>
-          </div>
+          <div class="rcard-fenster"><div id="fd-KI" class="rcard-fdot"></div><div id="ft-KI" class="rcard-ftext"></div></div>
         </div>
         <div id="re-KI" class="rcard-emp">–</div>
         <div class="rcard-ah-row">
@@ -125,15 +94,11 @@
           <button class="rbtn rbtn-g" onclick="setFenster('KI','geschlossen')">Zu</button>
         </div>
       </div>
-
       <!-- WZ -->
       <div id="rc-WZ" class="rcard">
         <div class="rcard-head">
           <div class="rcard-name">Wohnzimmer</div>
-          <div class="rcard-fenster">
-            <div id="fd-WZ" class="rcard-fdot"></div>
-            <div id="ft-WZ" class="rcard-ftext"></div>
-          </div>
+          <div class="rcard-fenster"><div id="fd-WZ" class="rcard-fdot"></div><div id="ft-WZ" class="rcard-ftext"></div></div>
         </div>
         <div id="re-WZ" class="rcard-emp">–</div>
         <div class="rcard-ah-row">
@@ -150,10 +115,7 @@
           <button class="rbtn rbtn-g" onclick="setFenster('WZ','geschlossen')">Zu</button>
         </div>
       </div>
-
-    </div><!-- /room-grid -->
-
-    <!-- Footer -->
+    </div>
     <div id="main-footer">
       <button id="fb-auf" class="fbtn" onclick="alleSetzen('offen')">Alle auf</button>
       <button id="fb-zu"  class="fbtn" onclick="alleSetzen('geschlossen')">Alle zu</button>
@@ -161,112 +123,146 @@
       <button id="fb-log" class="fbtn" onclick="zeigeHistorie()">Log</button>
       <button id="fb-ref" class="fbtn" onclick="laden()">↺</button>
     </div>
-
-  </div><!-- /screen-main -->
+  </div>
 
   <!-- Historienansicht -->
   <div id="screen-hist" class="screen is-hidden">
     <div class="hist-topbar">
-		<button class="back-btn" onclick="zeigeMain()">
-		<span class="back-chevron">‹</span>Zurück
-		</button>
-		<span class="hist-topbar-title">Verlauf</span>
-	<div class="view-toggle">
-		<button class="vtbtn active" id="vt-log"   onclick="switchView('log')">Liste</button>
-		<button class="vtbtn"        id="vt-chart" onclick="switchView('chart')">Charts</button>
-  </div>
-  </div>
+      <button class="back-btn" onclick="zeigeMain()"><span class="back-chevron">‹</span>Zurück</button>
+      <span class="hist-topbar-title">Verlauf</span>
+      <div class="view-toggle">
+        <button class="vtbtn active" id="vt-log"   onclick="switchView('log')">Liste</button>
+        <button class="vtbtn"        id="vt-chart" onclick="switchView('chart')">Charts</button>
+      </div>
+    </div>
+
     <div id="hist-body">
 
-  <!-- LOG VIEW -->
-  <div class="hist-view is-active" id="view-log">
-    <div class="mnav">
-      <button class="mnav-btn" id="mprev" onclick="wechselMonat(-1)">◀️</button>
-      <span class="mnav-label" id="mlabel">–</span>
-      <button class="mnav-btn" id="mnext" onclick="wechselMonat(1)">▶️</button>
-    </div>
-    <div id="hist-content"></div>
-  </div>
+      <!-- LOG VIEW -->
+      <div class="hist-view is-active" id="view-log">
+        <div class="mnav">
+          <button class="mnav-btn" id="mprev" onclick="wechselMonat(-1)">◀️</button>
+          <span class="mnav-label" id="mlabel">–</span>
+          <button class="mnav-btn" id="mnext" onclick="wechselMonat(1)">▶️</button>
+        </div>
+        <div id="hist-content"></div>
+      </div>
 
-  <!-- CHART VIEW -->
-  <div class="hist-view is-inactive-right" id="view-charts">
-    <div class="chart-range-row">
-      <span class="chart-range-label">Zeitraum</span>
-      <div class="range-btns">
-        <button class="rbtn-range active" onclick="setRange(6)"  id="rb-6">6h</button>
-        <button class="rbtn-range"        onclick="setRange(12)" id="rb-12">12h</button>
-        <button class="rbtn-range"        onclick="setRange(24)" id="rb-24">24h</button>
-        <button class="rbtn-range"        onclick="setRange(48)" id="rb-48">48h</button>
-      </div>
-    </div>
-	<!-- Außen -->
-	<div class="chart-section">
-	  <div class="chart-section-title">Außen</div>
-	  <div class="chart-row">
-		<div class="chart-card">
-		  <div class="chart-card-title">Temperatur °C</div>
-		    <div class="chart-stats" id="stats-A-temp"></div>
-		  <div class="chart-wrap"><canvas id="ch-A-temp"></canvas></div>
-		</div>
-		<div class="chart-card">
-		  <div class="chart-card-title">Absolute Feuchte g/m³</div>
-			<div class="chart-stats" id="stats-A-ah"></div>
-		  <div class="chart-wrap"><canvas id="ch-A-ah"></canvas></div>
-		</div>
-	  </div>
-	</div>
-    <!-- SZ -->
-    <div class="chart-section">
-      <div class="chart-section-title">Schlafzimmer</div>
-      <div class="chart-row">
-        <div class="chart-card">
-          <div class="chart-card-title">Temperatur</div>
-		    <div class="chart-stats" id="stats-SZ-temp"></div>
-          <div class="chart-wrap"><canvas id="ch-SZ-temp"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title">Absolute Feuchte g/m³</div>
-		  <div class="chart-stats" id="stats-SZ-ah"></div>
-          <div class="chart-wrap"><canvas id="ch-SZ-ah"></canvas></div>
-        </div>
-      </div>
-    </div>
-    <!-- KI -->
-    <div class="chart-section">
-      <div class="chart-section-title">Kinderzimmer</div>
-      <div class="chart-row">
-        <div class="chart-card">
-          <div class="chart-card-title">Temperatur</div>
-		    <div class="chart-stats" id="stats-KI-temp"></div>
-          <div class="chart-wrap"><canvas id="ch-KI-temp"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title">Absolute Feuchte g/m³</div>
-			<div class="chart-stats" id="stats-KI-ah"></div>
-          <div class="chart-wrap"><canvas id="ch-KI-ah"></canvas></div>
-        </div>
-      </div>
-    </div>
-    <!-- WZ -->
-    <div class="chart-section">
-      <div class="chart-section-title">Wohnzimmer</div>
-      <div class="chart-row">
-        <div class="chart-card">
-          <div class="chart-card-title">Temperatur</div>
-		    <div class="chart-stats" id="stats-WZ-temp"></div>
-          <div class="chart-wrap"><canvas id="ch-WZ-temp"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title">Absolute Feuchte g/m³</div>
-			<div class="chart-stats" id="stats-WZ-ah"></div>
-          <div class="chart-wrap"><canvas id="ch-WZ-ah"></canvas></div>
-        </div>
-      </div>
-    </div>
-  </div><!-- /view-charts -->
+      <!-- CHART VIEW -->
+      <div class="hist-view is-inactive-right" id="view-charts">
 
-</div><!-- /hist-body -->
-  </div>
+        <!-- Steuerleiste -->
+        <div class="chart-controls">
+
+          <!-- Zeile 1: Zeitraum -->
+          <div class="ctrl-row">
+            <span class="ctrl-label">Zeitraum</span>
+            <div class="ctrl-btns">
+              <button class="rbtn-range active" id="rb-kurz" onclick="setZeitbereich('kurz')">Kurz</button>
+              <button class="rbtn-range"        id="rb-lang" onclick="setZeitbereich('lang')">Lang</button>
+            </div>
+          </div>
+
+          <!-- Zeile 2: Zeitraum-Detail (dynamisch) -->
+          <div class="ctrl-row">
+            <span class="ctrl-label"></span><!-- Spacer für Ausrichtung -->
+            <div class="ctrl-btns" id="range-kurz">
+              <button class="rbtn-range active" onclick="setRange(6)"  id="rb-6">6h</button>
+              <button class="rbtn-range"        onclick="setRange(12)" id="rb-12">12h</button>
+              <button class="rbtn-range"        onclick="setRange(24)" id="rb-24">24h</button>
+              <button class="rbtn-range"        onclick="setRange(48)" id="rb-48">48h</button>
+            </div>
+            <div class="ctrl-btns" id="range-lang" style="display:none;">
+              <button class="rbtn-range active" onclick="setLangModus('1M')" id="rb-1M">1M</button>
+              <button class="rbtn-range"        onclick="setLangModus('1J')" id="rb-1J">1J</button>
+            </div>
+          </div>
+
+          <!-- Trennlinie -->
+          <div class="ctrl-divider"></div>
+
+          <!-- Zeile 3: Ansicht -->
+          <div class="ctrl-row">
+            <span class="ctrl-label">Ansicht</span>
+            <div class="ctrl-btns">
+              <button class="rbtn-range active" id="cm-temp-ah" onclick="setChartMode('temp-ah')">Temp / AH</button>
+              <button class="rbtn-range"        id="cm-temp-rh" onclick="setChartMode('temp-rh')">Temp / RH</button>
+            </div>
+          </div>
+
+        </div><!-- /chart-controls -->
+
+        <!-- Außen -->
+        <div class="chart-section">
+          <div class="chart-section-title">Außen</div>
+          <div class="chart-row">
+            <div class="chart-card">
+              <div class="chart-card-title">Temperatur °C</div>
+              <div class="chart-stats" id="stats-A-temp"></div>
+              <div class="chart-wrap"><canvas id="ch-A-temp"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <div id="title-A-rechts" class="chart-card-title">Absolute Feuchte g/m³</div>
+              <div class="chart-stats" id="stats-A-rechts"></div>
+              <div class="chart-wrap"><canvas id="ch-A-rechts"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SZ -->
+        <div class="chart-section">
+          <div class="chart-section-title">Schlafzimmer</div>
+          <div class="chart-row">
+            <div class="chart-card">
+              <div class="chart-card-title">Temperatur °C</div>
+              <div class="chart-stats" id="stats-SZ-temp"></div>
+              <div class="chart-wrap"><canvas id="ch-SZ-temp"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <div id="title-SZ-rechts" class="chart-card-title">Absolute Feuchte g/m³</div>
+              <div class="chart-stats" id="stats-SZ-rechts"></div>
+              <div class="chart-wrap"><canvas id="ch-SZ-rechts"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KI -->
+        <div class="chart-section">
+          <div class="chart-section-title">Kinderzimmer</div>
+          <div class="chart-row">
+            <div class="chart-card">
+              <div class="chart-card-title">Temperatur °C</div>
+              <div class="chart-stats" id="stats-KI-temp"></div>
+              <div class="chart-wrap"><canvas id="ch-KI-temp"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <div id="title-KI-rechts" class="chart-card-title">Absolute Feuchte g/m³</div>
+              <div class="chart-stats" id="stats-KI-rechts"></div>
+              <div class="chart-wrap"><canvas id="ch-KI-rechts"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WZ -->
+        <div class="chart-section">
+          <div class="chart-section-title">Wohnzimmer</div>
+          <div class="chart-row">
+            <div class="chart-card">
+              <div class="chart-card-title">Temperatur °C</div>
+              <div class="chart-stats" id="stats-WZ-temp"></div>
+              <div class="chart-wrap"><canvas id="ch-WZ-temp"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <div id="title-WZ-rechts" class="chart-card-title">Absolute Feuchte g/m³</div>
+              <div class="chart-stats" id="stats-WZ-rechts"></div>
+              <div class="chart-wrap"><canvas id="ch-WZ-rechts"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /view-charts -->
+    </div><!-- /hist-body -->
+  </div><!-- /screen-hist -->
 
 </div><!-- /app-screen -->
 
@@ -277,16 +273,15 @@
 // ─────────────────────────────────────────────
 // KONFIGURATION
 // ─────────────────────────────────────────────
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz0oWvF6y8TMPQ3Pz2ZJSAbu3x0-0wKxhIlYsBnvrWcDp-aqFKLUmzvc7YjhMd94Ex6FA/exec"
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwCGNKoNY7O5Qj-tsrbuW3Tsgqh_glFbla9yQp7gCt0jXkIjXo-HXZ4mXfuSpaJIIsZcQ/exec";
 let SECRET_TOKEN = null;
 
-const ROOMS     = ["SZ","KI","WZ"];
+const ROOMS      = ["SZ","KI","WZ"];
 const ROOM_KEYS  = { SZ:"schlafzimmer", KI:"kinderzimmer", WZ:"wohnzimmer" };
 const ROOM_NAMES = { SZ:"Schlafzimmer", KI:"Kinderzimmer", WZ:"Wohnzimmer" };
 
-// let reloadTimer  = null;
 let currentTimer = null;
-const RELOAD_MS = 2 * 60 * 1000;
+const RELOAD_MS  = 2 * 60 * 1000;
 
 let urlaubsmodus = "Nein";
 let ahAussen     = null;
@@ -301,12 +296,9 @@ const MONATE_DE  = ["Januar","Februar","März","April","Mai","Juni",
 function handleCredentialResponse(response) {
   const data = parseJwt(response.credential);
   console.log("✅ Angemeldet als:", data.email);
-
   SECRET_TOKEN = "sfj$akfgkjnifgh12$!dfkgs";
-
   document.getElementById("login-screen").style.display = "none";
   document.getElementById("app-screen").style.display   = "block";
-
   laden();
 }
 
@@ -315,9 +307,6 @@ function parseJwt(token) {
   catch(e) { return {}; }
 }
 
-// ─────────────────────────────────────────────
-// START
-// ─────────────────────────────────────────────
 window.onload = function() {
   google.accounts.id.initialize({
     client_id: "801207360349-a15mjbkcqhvlgjvqaev642lb0t4v81fd.apps.googleusercontent.com",
@@ -333,17 +322,18 @@ window.onload = function() {
 // ─────────────────────────────────────────────
 // NAVIGATION
 // ─────────────────────────────────────────────
-function zeigeHistorie(){
+function zeigeHistorie() {
   vib(8);
-  if(currentTimer)clearInterval(currentTimer);
+  if(currentTimer) clearInterval(currentTimer);
   document.getElementById("screen-main").classList.replace("is-visible","is-behind");
   document.getElementById("screen-hist").classList.replace("is-hidden","is-visible");
   ladeHistorie();
-  currentTimer=setInterval(ladeHistorie, RELOAD_MS);
+  currentTimer = setInterval(ladeHistorie, RELOAD_MS);
 }
-function zeigeMain(){
+
+function zeigeMain() {
   vib(8);
-  if(currentTimer)clearInterval(currentTimer);
+  if(currentTimer) clearInterval(currentTimer);
   document.getElementById("screen-hist").classList.replace("is-visible","is-hidden");
   document.getElementById("screen-main").classList.replace("is-behind","is-visible");
   laden();
@@ -353,7 +343,7 @@ function zeigeMain(){
 // DATEN LADEN
 // ─────────────────────────────────────────────
 async function laden() {
-  if(currentTimer) clearTimeout(currentTimer);
+  if(currentTimer) clearInterval(currentTimer);
   try {
     const r = await fetch(`${WEB_APP_URL}?action=read&token=${SECRET_TOKEN}`);
     const d = await r.json();
@@ -361,54 +351,72 @@ async function laden() {
   } catch(e) {
     showToast("⚠ Verbindungsfehler");
   }
-  currentTimer = setTimeout(laden, RELOAD_MS);
+  currentTimer = setInterval(laden, RELOAD_MS);
+}
+
+// ─────────────────────────────────────────────
+// FORMAT
+// ─────────────────────────────────────────────
+function formatDatum(val) {
+  if(!val) return null;
+  return new Date(val).toLocaleDateString("de-DE", {
+    day:"2-digit", month:"2-digit", year:"numeric",
+    timeZone:"Europe/Berlin"
+  });
+}
+
+function formatUhrzeit(val) {
+  if(!val) return null;
+  const s = String(val);
+  if(/^\d{2}:\d{2}:\d{2}$/.test(s)) return s.substring(0,5);
+  try {
+    const d = new Date(val);
+    if(isNaN(d.getTime())) return s;
+    return d.toLocaleTimeString("de-DE", {
+      hour:"2-digit", minute:"2-digit",
+      timeZone:"Europe/Berlin"
+    });
+  } catch(e) { return s; }
+}
+
+function fT(v)  { return v ? parseFloat(v).toFixed(2)+"°C"    : "–"; }
+function fRH(v) { return v ? parseFloat(v).toFixed(0)+"%"     : "–"; }
+function fAH(v) { return v ? parseFloat(v).toFixed(2)+" g/m³" : "–"; }
+
+function vib(pattern) {
+  if(navigator.vibrate) navigator.vibrate(pattern);
+}
+
+function showToast(msg) {
+  let el = document.getElementById("toast");
+  if(!el) {
+    el = document.createElement("div");
+    el.id = "toast";
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.classList.add("on");
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove("on"), 2200);
 }
 
 // ─────────────────────────────────────────────
 // RENDER HAUPT
 // ─────────────────────────────────────────────
-function formatDatum(val) {
-  if (!val) return null;
-  return new Date(val).toLocaleDateString("de-DE", {
-    day: "2-digit", month: "2-digit", year: "numeric",
-    timeZone: "Europe/Berlin"
-  });
-}
-
-function formatUhrzeit(val) {
-  if (!val) return null;
-  const s = String(val);
-  if (/^\d{2}:\d{2}:\d{2}$/.test(s)) return s.substring(0, 5);
-  try {
-    const d = new Date(val);
-    if (isNaN(d.getTime())) return s;
-    // Nur die Uhrzeit ausgeben, egal welches Datum dahintersteckt
-    return d.toLocaleTimeString("de-DE", {
-      hour: "2-digit", minute: "2-digit",
-      timeZone: "Europe/Berlin"
-    });
-  } catch(e) { return s; }
-}
-
 function render(data) {
   const sp = document.getElementById("splash");
   if(sp) { sp.classList.add("fade"); setTimeout(()=>sp.remove(), 600); }
 
-  const datum = formatDatum(data.datum);
+  const datum   = formatDatum(data.datum);
   const uhrzeit = formatUhrzeit(data.uhrzeit);
-  document.getElementById("ts").textContent =
-    [datum, uhrzeit].filter(Boolean).join("  ") || "–";
-//	console.log("datum:", data.datum, "uhrzeit:", data.uhrzeit);
-//	console.log("raw datum:", JSON.stringify(data.datum));
-//	const d = new Date("2026-05-24T22:00:00.000Z");
-//  console.log(d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Berlin" }));
+  document.getElementById("ts").textContent = [datum,uhrzeit].filter(Boolean).join("  ") || "–";
 
   urlaubsmodus = data.urlaubsmodus || "Nein";
-  const isUrl = urlaubsmodus === "Ja";
+  const isUrl  = urlaubsmodus === "Ja";
   document.getElementById("badge-url").classList.toggle("on", isUrl);
   document.getElementById("fb-url").classList.toggle("on", isUrl);
 
-  const a   = data.aussen || {};
+  const a    = data.aussen || {};
   const aOff = !a.temp || a.temp === "Sensor offline";
   ahAussen   = aOff ? null : parseFloat(a.ah);
   document.getElementById("o-off").classList.toggle("on", aOff);
@@ -479,40 +487,24 @@ function renderRoom(k, d, aOff) {
 // ─────────────────────────────────────────────
 // AKTIONEN
 // ─────────────────────────────────────────────
-//async function post(payload) {
-//  const r = await fetch(WEB_APP_URL, {
-//    method: "POST",
-//    headers: { "Content-Type": "application/json" },
-//    body: JSON.stringify({ ...payload, token: SECRET_TOKEN })
-//  });
-//  return r.json();
-//}
-
 async function post(payload) {
-  const params = new URLSearchParams({
-    ...payload,
-    token: SECRET_TOKEN
-  });
-  // Verschachtelte Objekte (zimmer) müssen serialisiert werden:
-  if (payload.zimmer) {
-    params.set("zimmer", JSON.stringify(payload.zimmer));
-  }
+  const params = new URLSearchParams({ ...payload, token: SECRET_TOKEN });
+  if(payload.zimmer) params.set("zimmer", JSON.stringify(payload.zimmer));
   const r = await fetch(`${WEB_APP_URL}?${params.toString()}`);
   return r.json();
 }
-
 
 async function setFenster(k, richtung) {
   vib([6,40,6]);
   const name = ROOM_NAMES[k];
   const wert = richtung === "offen" ? "Fenster offen" : "Fenster geschlossen";
   const ere  = richtung === "offen" ? "Fenster geöffnet" : "Fenster geschlossen";
-  showToast(name + " · " + ere + " …");
+  showToast(name+" · "+ere+" …");
   try {
-    await post({ action: "setStatusMehrere", zimmer: { [k]: wert } });
-    await post({ action: "logEreignis", ereignis: ere,
-                 zimmer: { SZ: k==="SZ", KI: k==="KI", WZ: k==="WZ" } });
-    showToast("✓ " + name + " · " + ere);
+    await post({ action:"setStatusMehrere", zimmer:{ [k]:wert } });
+    await post({ action:"logEreignis", ereignis:ere,
+                 zimmer:{ SZ:k==="SZ", KI:k==="KI", WZ:k==="WZ" } });
+    showToast("✓ "+name+" · "+ere);
     await laden();
   } catch(e) { showToast("⚠ Fehler"); }
 }
@@ -521,11 +513,11 @@ async function alleSetzen(richtung) {
   vib([6,40,6]);
   const wert = richtung === "offen" ? "Fenster offen" : "Fenster geschlossen";
   const ere  = richtung === "offen" ? "Fenster geöffnet" : "Fenster geschlossen";
-  showToast("Alle · " + ere + " …");
+  showToast("Alle · "+ere+" …");
   try {
-    await post({ action: "setStatusMehrere", zimmer: { SZ: wert, KI: wert, WZ: wert } });
-    await post({ action: "logEreignis", ereignis: ere, zimmer: { SZ: true, KI: true, WZ: true } });
-    showToast("✓ Alle · " + ere);
+    await post({ action:"setStatusMehrere", zimmer:{ SZ:wert, KI:wert, WZ:wert } });
+    await post({ action:"logEreignis", ereignis:ere, zimmer:{ SZ:true, KI:true, WZ:true } });
+    showToast("✓ Alle · "+ere);
     await laden();
   } catch(e) { showToast("⚠ Fehler"); }
 }
@@ -533,10 +525,10 @@ async function alleSetzen(richtung) {
 async function toggleUrlaub() {
   vib(12);
   const neu = urlaubsmodus === "Ja" ? "Nein" : "Ja";
-  showToast("Urlaubsmodus: " + neu + " …");
+  showToast("Urlaubsmodus: "+neu+" …");
   try {
-    await post({ action: "setUrlaubsmodus", value: neu });
-    showToast("✓ Urlaubsmodus: " + neu);
+    await post({ action:"setUrlaubsmodus", value:neu });
+    showToast("✓ Urlaubsmodus: "+neu);
     await laden();
   } catch(e) { showToast("⚠ Fehler"); }
 }
@@ -545,23 +537,9 @@ async function toggleUrlaub() {
 // HISTORIE
 // ─────────────────────────────────────────────
 function monatKey(d) {
-  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0");
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
 }
 
-/*async function ladeHistorie() {
-  updateMNav();
-  document.getElementById("hist-content").innerHTML = "";
-  try {
-    const r = await fetch(`${WEB_APP_URL}?action=readLog&sheet=${monatKey(histMonat)}&token=${SECRET_TOKEN}`);
-    const d = await r.json();
-    if(d.error) throw new Error(d.error);
-    renderHistorie(d.rows || []);
-  } catch(e) {
-    document.getElementById("hist-content").innerHTML =
-      `<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">Keine Daten</div></div>`;
-  }
-}*/
-// NEU
 async function ladeHistorie() {
   updateMNav();
   try {
@@ -570,7 +548,10 @@ async function ladeHistorie() {
     if(d.error) throw new Error(d.error);
     allRows = d.rows || [];
     renderHistorie(allRows);
-    if(activeView === "chart") buildCharts();
+    if(activeView === "chart") {
+      if(zeitbereich === "lang") buildLangCharts();
+      else buildCharts();
+    }
   } catch(e) {
     allRows = [];
     document.getElementById("hist-content").innerHTML =
@@ -580,13 +561,14 @@ async function ladeHistorie() {
 
 function wechselMonat(delta) {
   vib(6);
-  histMonat = new Date(histMonat.getFullYear(), histMonat.getMonth() + delta, 1);
+  histMonat = new Date(histMonat.getFullYear(), histMonat.getMonth()+delta, 1);
+  allRows   = [];
   ladeHistorie();
 }
 
 function updateMNav() {
   document.getElementById("mlabel").textContent =
-    MONATE_DE[histMonat.getMonth()] + " " + histMonat.getFullYear();
+    MONATE_DE[histMonat.getMonth()]+" "+histMonat.getFullYear();
   document.getElementById("mnext").disabled =
     monatKey(histMonat) === monatKey(NOW_MONAT);
 }
@@ -615,9 +597,7 @@ function renderHistorie(rows) {
 function buildEntry(row) {
   const zeit = formatUhrzeit(row[1]) || "–";
   const ere  = row[2] || "";
-  const mess = ere === "Messung";
-
-  if(!mess) {
+  if(ere !== "Messung") {
     const pills = [];
     if(row[3]==="✓") pills.push("Schlafzimmer");
     if(row[4]==="✓") pills.push("Kinderzimmer");
@@ -631,12 +611,11 @@ function buildEntry(row) {
       </div>
     </div>`;
   }
-
   const zellen = [
-    {k:"Außen", t:row[7],  r:row[8],  a:row[9],  e:null},
-    {k:"Schlafzimmer",    t:row[10], r:row[11], a:row[12], e:row[13]},
-    {k:"Kinderzimmer",    t:row[14], r:row[15], a:row[16], e:row[17]},
-    {k:"Wohnzimmer",    t:row[18], r:row[19], a:row[20], e:row[21]},
+    {k:"Außen",        t:row[7],  r:row[8],  a:row[9],  e:null},
+    {k:"Schlafzimmer", t:row[10], r:row[11], a:row[12], e:row[13]},
+    {k:"Kinderzimmer", t:row[14], r:row[15], a:row[16], e:row[17]},
+    {k:"Wohnzimmer",   t:row[18], r:row[19], a:row[20], e:row[21]},
   ];
   const cells = zellen.map(z => `
     <div class="lmcell">
@@ -654,34 +633,15 @@ function buildEntry(row) {
 }
 
 // ─────────────────────────────────────────────
-// HILFSFUNKTIONEN
-// ─────────────────────────────────────────────
-function fT(v)  { return v ? parseFloat(v).toFixed(2)+"°C"   : "–"; }
-function fRH(v) { return v ? parseFloat(v).toFixed(0)+"%"    : "–"; }
-function fAH(v) { return v ? parseFloat(v).toFixed(2)+" g/m³": "–"; }
-
-function vib(pattern) {
-  if(navigator.vibrate) navigator.vibrate(pattern);
-}
-
-function showToast(msg) {
-  let el = document.getElementById("toast");
-  if(!el) {
-    el = document.createElement("div");
-    el.id = "toast";
-    document.body.appendChild(el);
-  }
-  el.textContent = msg;
-  el.classList.add("on");
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove("on"), 2200);
-}
-
-// ─────────────────────────────────────────────
-// CHARTS
+// CHART STATE
 // ─────────────────────────────────────────────
 let allRows     = [];
 let chartRangeH = 6;
+let chartMode   = "temp-ah";
+let zeitbereich = "kurz";
+let langModus   = "1M";
+let langRows    = [];
+let histJahr    = new Date().getFullYear();
 let activeView  = "log";
 let charts      = {};
 
@@ -694,18 +654,26 @@ const ROW = {
   WZ_TEMP:18,WZ_RH:19, WZ_AH:20, WZ_EMP:21,
 };
 const ROOM_ROW = {
-  A: { temp:ROW.A_TEMP,  ah:ROW.A_AH  },
-  SZ:{ temp:ROW.SZ_TEMP, ah:ROW.SZ_AH },
-  KI:{ temp:ROW.KI_TEMP, ah:ROW.KI_AH },
-  WZ:{ temp:ROW.WZ_TEMP, ah:ROW.WZ_AH },
+  A:  { temp:ROW.A_TEMP,  rh:ROW.A_RH,  ah:ROW.A_AH  },
+  SZ: { temp:ROW.SZ_TEMP, rh:ROW.SZ_RH, ah:ROW.SZ_AH },
+  KI: { temp:ROW.KI_TEMP, rh:ROW.KI_RH, ah:ROW.KI_AH },
+  WZ: { temp:ROW.WZ_TEMP, rh:ROW.WZ_RH, ah:ROW.WZ_AH },
 };
 const CHART_COLORS = {
-  A: { temp:"#ffffff", ah:"#aaaaaa" },
-  SZ: { temp:"#3d8eff", ah:"#0df5a0" },
-  KI: { temp:"#ff7c3a", ah:"#f5d000" },
-  WZ: { temp:"#c77dff", ah:"#ff3d6e" },
+  A:  { temp:"#ffffff", ah:"#aaaaaa", rh:"#cccccc" },
+  SZ: { temp:"#3d8eff", ah:"#0df5a0", rh:"#7ab8ff" },
+  KI: { temp:"#ff7c3a", ah:"#f5d000", rh:"#ffaa80" },
+  WZ: { temp:"#c77dff", ah:"#ff3d6e", rh:"#e0aaff" },
 };
 
+const RECHTS_TITLE = {
+  "temp-ah": "Absolute Feuchte g/m³",
+  "temp-rh": "Relative Feuchte %rF",
+};
+
+// ─────────────────────────────────────────────
+// VIEW TOGGLE
+// ─────────────────────────────────────────────
 function switchView(v) {
   vib(6);
   if(v === activeView) return;
@@ -717,19 +685,34 @@ function switchView(v) {
   if(v === "chart") {
     logEl.classList.replace("is-active","is-inactive-left");
     chartEl.classList.replace("is-inactive-right","is-active");
-    waitForDataAndBuild();
+    if(zeitbereich === "lang") ladeLangzeit();
+    else waitForDataAndBuild();
   } else {
     chartEl.classList.replace("is-active","is-inactive-right");
     logEl.classList.replace("is-inactive-left","is-active");
   }
 }
 
-function waitForDataAndBuild(){
-	if (allRows.length > 0) {
-		setTimeout(() => buildCharts(), 300);
-	} else {
-		setTimeout(() => waitForDataAndBuild(),200);
-	}
+function waitForDataAndBuild() {
+  if(allRows.length > 0) {
+    setTimeout(() => buildCharts(), 300);
+  } else {
+    setTimeout(() => waitForDataAndBuild(), 200);
+  }
+}
+
+// ─────────────────────────────────────────────
+// CHART CONTROLS
+// ─────────────────────────────────────────────
+function setZeitbereich(z) {
+  vib(6);
+  zeitbereich = z;
+  document.getElementById("rb-kurz").classList.toggle("active", z==="kurz");
+  document.getElementById("rb-lang").classList.toggle("active", z==="lang");
+  document.getElementById("range-kurz").style.display = z==="kurz" ? "flex" : "none";
+  document.getElementById("range-lang").style.display = z==="lang" ? "flex" : "none";
+  if(z === "lang") ladeLangzeit();
+  else buildCharts();
 }
 
 function setRange(h) {
@@ -741,37 +724,61 @@ function setRange(h) {
   buildCharts();
 }
 
+function setLangModus(m) {
+  vib(6);
+  langModus = m;
+  document.getElementById("rb-1M").classList.toggle("active", m==="1M");
+  document.getElementById("rb-1J").classList.toggle("active", m==="1J");
+  ladeLangzeit();
+}
+
+function setChartMode(m) {
+  vib(6);
+  chartMode = m;
+  document.getElementById("cm-temp-ah").classList.toggle("active", m==="temp-ah");
+  document.getElementById("cm-temp-rh").classList.toggle("active", m==="temp-rh");
+  // Titel aktualisieren
+  updateRechtsTitle();
+  if(zeitbereich === "lang") buildLangCharts();
+  else buildCharts();
+}
+
+function updateRechtsTitle() {
+  const title = RECHTS_TITLE[chartMode];
+  ["A","SZ","KI","WZ"].forEach(k => {
+    const el = document.getElementById("title-"+k+"-rechts");
+    if(el) el.textContent = title;
+  });
+}
+
+// ─────────────────────────────────────────────
+// CHART HELPERS
+// ─────────────────────────────────────────────
 function rowToDate(row) {
   const d = row[ROW.DATUM];
   const t = row[ROW.UHRZEIT];
   if(!d || !t) return null;
-
-  // Datum mit Berlin-Timezone (wie formatDatum)
   const datumStr = new Date(d).toLocaleDateString("de-DE", {
-    day: "2-digit", month: "2-digit", year: "numeric",
-    timeZone: "Europe/Berlin"
+    day:"2-digit", month:"2-digit", year:"numeric",
+    timeZone:"Europe/Berlin"
   });
   const parts = datumStr.split(".");
   if(parts.length < 3) return null;
-
-  // Uhrzeit mit Berlin-Timezone (wie formatUhrzeit)
   const uhrzeitStr = new Date(t).toLocaleTimeString("de-DE", {
-    hour: "2-digit", minute: "2-digit",
-    timeZone: "Europe/Berlin"
+    hour:"2-digit", minute:"2-digit",
+    timeZone:"Europe/Berlin"
   });
   const timeParts = uhrzeitStr.split(":");
   if(timeParts.length < 2) return null;
-
   return new Date(
     parseInt(parts[2]),
-    parseInt(parts[1]) - 1,
+    parseInt(parts[1])-1,
     parseInt(parts[0]),
     parseInt(timeParts[0]),
     parseInt(timeParts[1]),
     0
   );
 }
-
 
 function filterByRange(rows, stunden) {
   const now    = new Date();
@@ -827,7 +834,8 @@ function makeChartCfg(labels, values, color, unit) {
           ticks:{ color:"#304055", font:{ family:"'Fira Code', monospace", size:9 }, maxTicksLimit:6, maxRotation:0 },
           grid:{ color:"#1f2836" }, border:{ color:"#1f2836" },
         },
-        y: {ticks:{ color:"#304055", font:{ family:"'Fira Code', monospace", size:9 }, maxTicksLimit:5 },
+        y: {
+          ticks:{ color:"#304055", font:{ family:"'Fira Code', monospace", size:9 }, maxTicksLimit:5 },
           grid:{ color:"#1f2836" }, border:{ color:"#1f2836" },
         }
       }
@@ -835,42 +843,17 @@ function makeChartCfg(labels, values, color, unit) {
   };
 }
 
-function buildCharts() {
-console.log("allRows count:", allRows.length);
-  console.log("first row sample:", allRows[0]);
-   
-  const filtered = filterByRange(allRows, chartRangeH).reverse();
-  console.log("filtered count:", filtered.length);
-  const labels = filtered.map(row => {
-    const dt = rowToDate(row);
-    if(!dt) return String(row[ROW.UHRZEIT]||"–").substring(0,5);
-    return String(dt.getHours()).padStart(2,"0")+":"+String(dt.getMinutes()).padStart(2,"0");
-  });
-
-//  ROOMS.forEach(k => {
-["A", ...ROOMS].forEach(k => {
-    const ri   = ROOM_ROW[k];
-    const tempVals = filtered.map(r => { const v=parseFloat(r[ri.temp]); return isNaN(v)?null:v; });
-    const ahVals = filtered.map(r => { const v=parseFloat(r[ri.ah]); return isNaN(v)?null:v; });
-	renderStats("stats-"+k+"-temp", tempVals, "°C");
-	renderStats("stats-"+k+"-ah",   ahVals,   "g/m³");
-    const tempId = "ch-"+k+"-temp";
-    const ahId = "ch-"+k+"-ah";
-
-    if(charts[tempId]){ charts[tempId].destroy(); delete charts[tempId]; }
-    if(charts[ahId]){ charts[ahId].destroy(); delete charts[ahId]; }
-
-    if(!filtered.length) {
-      [tempId,ahId].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.parentNode.innerHTML = `<div class="chart-no-data">Keine Daten im Zeitraum</div>`;
-      });
-      return;
-    }
-
-    charts[tempId] = new Chart(document.getElementById(tempId), makeChartCfg(labels, tempVals, CHART_COLORS[k].temp, "°C"));
-    charts[ahId] = new Chart(document.getElementById(ahId), makeChartCfg(labels, ahVals, CHART_COLORS[k].ah, "g/m³"));
-  });
+function resetChartCanvas(id) {
+  // Stellt sicher dass das Canvas existiert (nach chart-no-data Ersatz)
+  const existing = document.getElementById(id);
+  if(existing && existing.tagName === "CANVAS") return existing;
+  // Canvas wurde ersetzt – neu erstellen
+  const wrap = document.querySelector(`.chart-wrap[data-id="${id}"]`);
+  if(wrap) {
+    wrap.innerHTML = `<canvas id="${id}"></canvas>`;
+    return document.getElementById(id);
+  }
+  return null;
 }
 
 function renderStats(containerId, values, unit) {
@@ -882,19 +865,152 @@ function renderStats(containerId, values, unit) {
   const max = Math.max(...valid);
   const avg = valid.reduce((a,b) => a+b, 0) / valid.length;
   el.innerHTML = `
-  <div class="chart-stat-inline">
-    <span class="chart-stat-k">Min</span>
-    <span class="chart-stat-v">${min.toFixed(2)} ${unit}</span>
-    <span class="chart-stat-sep">|</span>
-    <span class="chart-stat-k">Max</span>
-    <span class="chart-stat-v">${max.toFixed(2)} ${unit}</span>
-    <span class="chart-stat-sep">|</span>
-    <span class="chart-stat-k">⌀</span>
-    <span class="chart-stat-v">${avg.toFixed(2)} ${unit}</span>
-  </div>`;
+    <div class="chart-stat-inline">
+      <span class="chart-stat-k">Min</span>
+      <span class="chart-stat-v">${min.toFixed(2)} ${unit}</span>
+      <span class="chart-stat-sep">|</span>
+      <span class="chart-stat-k">Max</span>
+      <span class="chart-stat-v">${max.toFixed(2)} ${unit}</span>
+      <span class="chart-stat-sep">|</span>
+      <span class="chart-stat-k">⌀</span>
+      <span class="chart-stat-v">${avg.toFixed(2)} ${unit}</span>
+    </div>`;
+}
+
+// ─────────────────────────────────────────────
+// BUILD CHARTS (Kurzzeit)
+// ─────────────────────────────────────────────
+function buildCharts() {
+  const filtered     = filterByRange(allRows, chartRangeH).reverse();
+  const rechtsTyp    = chartMode === "temp-ah" ? "ah" : "rh";
+  const rechtsUnit   = chartMode === "temp-ah" ? "g/m³" : "%rF";
+
+  const labels = filtered.map(row => {
+    const dt = rowToDate(row);
+    if(!dt) return String(row[ROW.UHRZEIT]||"–").substring(0,5);
+    return String(dt.getHours()).padStart(2,"0")+":"+String(dt.getMinutes()).padStart(2,"0");
+  });
+
+  ["A",...ROOMS].forEach(k => {
+    const ri        = ROOM_ROW[k];
+    const tempVals   = filtered.map(r => { const v=parseFloat(r[ri.temp]);        return isNaN(v)?null:v; });
+    const rechtsVals = filtered.map(r => { const v=parseFloat(r[ri[rechtsTyp]]); return isNaN(v)?null:v; });
+    const tempId    = "ch-"+k+"-temp";
+    const rechtsId  = "ch-"+k+"-rechts";
+
+    if(charts[tempId])   { charts[tempId].destroy();   delete charts[tempId];   }
+    if(charts[rechtsId]) { charts[rechtsId].destroy(); delete charts[rechtsId]; }
+
+    const tempEl   = document.getElementById(tempId);
+    const rechtsEl = document.getElementById(rechtsId);
+
+    if(!filtered.length) {
+      if(tempEl)   tempEl.closest(".chart-wrap").classList.add("chart-wrap-empty");
+      if(rechtsEl) rechtsEl.closest(".chart-wrap").classList.add("chart-wrap-empty");
+      renderStats("stats-"+k+"-temp",   [], "°C");
+      renderStats("stats-"+k+"-rechts", [], rechtsUnit);
+      return;
+    }
+
+    if(tempEl)   tempEl.closest(".chart-wrap").classList.remove("chart-wrap-empty");
+    if(rechtsEl) rechtsEl.closest(".chart-wrap").classList.remove("chart-wrap-empty");
+
+    if(tempEl)   charts[tempId]   = new Chart(tempEl,   makeChartCfg(labels, tempVals,   CHART_COLORS[k].temp,         "°C"));
+    if(rechtsEl) charts[rechtsId] = new Chart(rechtsEl, makeChartCfg(labels, rechtsVals, CHART_COLORS[k][rechtsTyp],   rechtsUnit));
+
+    renderStats("stats-"+k+"-temp",   tempVals,   "°C");
+    renderStats("stats-"+k+"-rechts", rechtsVals, rechtsUnit);
+  });
+}
+
+// ─────────────────────────────────────────────
+// LANGZEIT
+// ─────────────────────────────────────────────
+async function ladeLangzeit() {
+  langRows = [];
+  try {
+    let url;
+    if(langModus === "1M") {
+      url = `${WEB_APP_URL}?action=readLog&sheet=${monatKey(histMonat)}&token=${SECRET_TOKEN}`;
+    } else {
+      url = `${WEB_APP_URL}?action=readLogYear&year=${histJahr}&token=${SECRET_TOKEN}`;
+    }
+    const r = await fetch(url);
+    const d = await r.json();
+    if(d.error) throw new Error(d.error);
+    langRows = d.rows || [];
+    buildLangCharts();
+  } catch(e) {
+    showToast("⚠ Fehler beim Laden");
+  }
+}
+
+function buildLangCharts() {
+  if(!langRows.length) return;
+
+  const isJahr     = langModus === "1J";
+  const rechtsTyp  = chartMode === "temp-ah" ? "ah" : "rh";
+  const rechtsUnit = chartMode === "temp-ah" ? "g/m³" : "%rF";
+
+  const JAHR_IDX = {
+    A:  { temp:1,  rh:2,  ah:3  },
+    SZ: { temp:4,  rh:5,  ah:6  },
+    KI: { temp:7,  rh:8,  ah:9  },
+    WZ: { temp:10, rh:11, ah:12 },
+  };
+
+  let labels, getVal, rows;
+
+  if(isJahr) {
+    rows   = langRows;
+    labels = rows.map(r => {
+      const d     = String(r[0]);
+      const parts = d.split("-");
+      return parts.length===3 ? parts[2]+"."+parts[1] : d;
+    });
+    getVal = (row, k, typ) => {
+      const v = parseFloat(row[JAHR_IDX[k][typ]]);
+      return isNaN(v) ? null : v;
+    };
+  } else {
+    rows   = langRows.filter(r => r[ROW.EREIGNIS]==="Messung");
+    labels = rows.map(row => {
+      const dt = rowToDate(row);
+      if(!dt) return String(row[ROW.UHRZEIT]||"–").substring(0,5);
+      return String(dt.getDate()).padStart(2,"0")+"."+
+             String(dt.getMonth()+1).padStart(2,"0")+" "+
+             String(dt.getHours()).padStart(2,"0")+":"+
+             String(dt.getMinutes()).padStart(2,"0");
+    });
+    getVal = (row, k, typ) => {
+      const v = parseFloat(row[ROOM_ROW[k][typ]]);
+      return isNaN(v) ? null : v;
+    };
+  }
+
+  ["A",...ROOMS].forEach(k => {
+    const tempVals   = rows.map(r => getVal(r, k, "temp"));
+    const rechtsVals = rows.map(r => getVal(r, k, rechtsTyp));
+    const tempId    = "ch-"+k+"-temp";
+    const rechtsId  = "ch-"+k+"-rechts";
+
+    if(charts[tempId])   { charts[tempId].destroy();   delete charts[tempId];   }
+    if(charts[rechtsId]) { charts[rechtsId].destroy(); delete charts[rechtsId]; }
+
+    const tempEl   = document.getElementById(tempId);
+    const rechtsEl = document.getElementById(rechtsId);
+
+    if(tempEl)   tempEl.closest(".chart-wrap").classList.remove("chart-wrap-empty");
+    if(rechtsEl) rechtsEl.closest(".chart-wrap").classList.remove("chart-wrap-empty");
+
+    if(tempEl)   charts[tempId]   = new Chart(tempEl,   makeChartCfg(labels, tempVals,   CHART_COLORS[k].temp,       "°C"));
+    if(rechtsEl) charts[rechtsId] = new Chart(rechtsEl, makeChartCfg(labels, rechtsVals, CHART_COLORS[k][rechtsTyp], rechtsUnit));
+
+    renderStats("stats-"+k+"-temp",   tempVals,   "°C");
+    renderStats("stats-"+k+"-rechts", rechtsVals, rechtsUnit);
+  });
 }
 
 </script>
-
 </body>
 </html>
